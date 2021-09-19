@@ -1,0 +1,52 @@
+{
+  "Campaigns_Screen": [
+    {
+      "S_Name": "Names & Business",
+      "S_ID": 1
+    },
+    {
+      "S_Name": "Age & Platforms",
+      "S_ID": 2
+    }, {
+      "S_Name": "Language",
+      "S_ID": 3
+    }, {
+      "S_Name": "Location",
+      "S_ID": 4
+    }, {
+      "S_Name": "Platform",
+      "S_ID": 5
+    }, {
+      "S_Name": "Product & service",
+      "S_ID": 6
+    }, {
+      "S_Name": "Interest Keywords",
+      "S_ID": 7
+    }, {
+      "S_Name": "Data Scrab",
+      "S_ID": 8
+    }, {
+      "S_Name": "Google ads",
+      "S_ID": 9
+    }, {
+      "S_Name": "Facebook ads",
+      "S_ID": 10
+    }, {
+      "S_Name": "Instagram ads",
+      "S_ID": 11
+    }, {
+      "S_Name": "Budget",
+      "S_ID": 12
+    }, {
+      "S_Name": "Platform",
+      "S_ID": 13
+    }, {
+      "S_Name": "Final Summary",
+      "S_ID": 14
+    }, {
+      "S_Name": "Payment",
+      "S_ID": 15
+    }
+    
+  ]
+}

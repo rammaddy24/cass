@@ -1,0 +1,43 @@
+[
+    {
+        "id": "14",
+        "department_id": "all",
+        "to_user_id": "all",
+        "submitter_id": "1",
+        "sent_at": "2020-06-24 14:36:48",
+        "message": "test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test ",
+        "status": "1",
+        "viewed_user_ids": ",5,16",
+        "first_name": "Master",
+        "last_name": "Admin",
+        "department_name": null
+    },
+    {
+        "id": "12",
+        "department_id": "all",
+        "to_user_id": "all",
+        "submitter_id": "1",
+        "sent_at": "2020-06-24 13:40:36",
+        "message": "Hello all",
+        "status": "1",
+        "viewed_user_ids": ",5,16",
+        "first_name": "Master",
+        "last_name": "Admin",
+        "department_name": null
+    },
+    {
+        "id": "11",
+        "department_id": "all",
+        "to_user_id": "all",
+        "submitter_id": "1",
+        "sent_at": "2020-06-15 05:36:04",
+        "message": "test ",
+        "status": "1",
+        "viewed_user_ids": ",5,2,3,16",
+        "first_name": "Master",
+        "last_name": "Admin",
+        "department_name": null
+    }
+    
+    
+]

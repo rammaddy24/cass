@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "407612109000",
+    "firebase_url": "https://cass-timesheet-7e30a.firebaseio.com",
+    "project_id": "cass-timesheet-7e30a",
+    "storage_bucket": "cass-timesheet-7e30a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:407612109000:android:e1565dd2a1d988b35bf5fd",
+        "android_client_info": {
+          "package_name": "com.cass.timesheet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "407612109000-ccm2lt9k1o08p3jgfb3c84lpol4sulpt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDK3uusjsrmXD1meijgbyuIB0WuxpPz47o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "407612109000-ccm2lt9k1o08p3jgfb3c84lpol4sulpt.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "407612109000-6tfedrauaiuqgsknfnloel1siujejocv.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.cass.timesheet"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

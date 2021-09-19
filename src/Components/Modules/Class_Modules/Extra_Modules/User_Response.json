@@ -1,0 +1,21 @@
+{
+    "status": true,
+    "message": "User Login Successful.",
+    "data": {
+        "id": "1",
+        "first_name": "Master",
+        "last_name": "Admin",
+        "email": "madmin@gmail.com",
+        "username": "madmin",
+        "password": "YWRtaW5AMTIz",
+        "phone": "7845479771",
+        "role_id": "1",
+        "image": "http://appbox.website/casstimesheet/assets/uploads/users/user.png",
+        "created": "2020-04-17 00:00:00",
+        "modified": "2020-07-02 12:54:06",
+        "status": "1",
+        "department_name": "FTTC",
+        "role": "Master Admin",
+        "department_ids": "3"
+    }
+}

@@ -1,0 +1,53 @@
+[
+    {
+        "id": "5",
+        "first_name": "Engineer",
+        "last_name": "Role",
+        "email": "eadmin@gmail.com",
+        "username": "engineeradmin",
+        "password": "",
+        "phone": "9800000000",
+        "role_id": "5",
+        "image": "",
+        "created": "2020-04-17 00:00:00",
+        "modified": "2020-07-06 12:43:30",
+        "status": "1",
+        "department_name": "Dslam Fibre, FTTC",
+        "role": "Engineer",
+        "department_ids": "1, 3"
+    },
+    {
+        "id": "14",
+        "first_name": "Anisha",
+        "last_name": "Banu",
+        "email": "anisha@gmail.com",
+        "username": "anisha",
+        "password": "827ccb0eea8a706c4c34a16891f84e7b",
+        "phone": "98623232",
+        "role_id": "5",
+        "image": "user_1591430832_user.png",
+        "created": "2020-06-17 00:00:00",
+        "modified": "2020-06-17 17:08:10",
+        "status": "1",
+        "department_name": "FTTC",
+        "role": "Engineer",
+        "department_ids": "3"
+    },
+    {
+        "id": "15",
+        "first_name": "Engineer2",
+        "last_name": "SC",
+        "email": "eadmin2@gmail.com",
+        "username": "Eng 2",
+        "password": "YWRtaW5AMTIz",
+        "phone": "123456789",
+        "role_id": "5",
+        "image": "user_1591956463_Capture1.PNG",
+        "created": "2020-06-17 00:00:00",
+        "modified": "2020-07-02 12:54:36",
+        "status": "1",
+        "department_name": "FTTC",
+        "role": "Engineer",
+        "department_ids": "3"
+    }
+]
