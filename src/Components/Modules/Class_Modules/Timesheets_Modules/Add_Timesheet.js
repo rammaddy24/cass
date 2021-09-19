@@ -1226,7 +1226,9 @@ class Add_Timesheet extends Component {
             this.refs["sign"].saveImage();
             this.setState({Signature_Image:'true'});
         } else if (Route_Data == "Reset") {
-            this.refs["sign"].resetImage();
+            if(this.refs["sign"]){
+                this.refs["sign"].resetImage();
+            }
              this.setState({Signature_Image:''});
             Snackbar.show({
                 title: 'Image Reset..!',
@@ -2094,21 +2096,27 @@ class Add_Timesheet extends Component {
                                                                     ASB_Text={"Signature Capture"}
                                                                 />
                                                                 <View style={styles.Container_EP_1} />
-                                                          
-                                                                <SignatureCapture
-                                                                    style={{ flex: 1, borderColor: '#000033', borderWidth: 1 }}
-                                                                    ref="sign"
-                                                                    //rotateClockwise={true}
-                                                                    onSaveEvent={this._onSaveEvent}
-                                                                    onDragEvent={this._onDragEvent}
-                                                                    saveImageFileInExtStorage={true}
-                                                                    showNativeButtons={false}
-                                                                    showTitleLabel={false}
-                                                                    backgroundColor={LG_BG_THEME.WHITE_THEME}
-                                                                    strokeColor={LG_BG_THEME.APPTHEME_1}
-                                                                    minStrokeWidth={4}
-                                                                    maxStrokeWidth={4}
-                                                                    viewMode={"portrait"} />
+                                                                {/* <Text>{this.state.Signature_Image}</Text> */}
+                                                              {this.state.Signature_Image === 'true' || this.state.Signature_Image==='' ?
+                                                                     <SignatureCapture
+                                                                     style={{ flex: 1, borderColor: '#000033', borderWidth: 1 }}
+                                                                     ref="sign"
+                                                                     //rotateClockwise={true}
+                                                                     onSaveEvent={this._onSaveEvent}
+                                                                     onDragEvent={this._onDragEvent}
+                                                                     saveImageFileInExtStorage={true}
+                                                                  
+                                                                     showNativeButtons={false}
+                                                                     showTitleLabel={false}
+                                                                     backgroundColor={LG_BG_THEME.WHITE_THEME}
+                                                                     strokeColor={LG_BG_THEME.APPTHEME_1}
+                                                                     minStrokeWidth={4}
+                                                                     maxStrokeWidth={4}
+                                                                     viewMode={"portrait"} />
+                                                                     :
+                                                                     <Image style={{width: 320, height: 400}} source={{uri: `data:${this.state.Signature_Image}`}}/>
+                                                              }
+                                                             
                                                                
                                                                 <View style={styles.Container_EP_2} />
 
