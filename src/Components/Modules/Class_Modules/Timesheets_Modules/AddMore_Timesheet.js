@@ -1557,7 +1557,7 @@ class AddMore_Timesheet extends Component {
                                                             {this.state.S2_Quatitylist_Response.map((item, index) => (
                                                                 <View style={{ height: height / 100 * 8, justifyContent: "center", }}>
 
-                                                                    <View style={{ flex: 1, justifyContent: "center", flexDirection: 'row', marginBottom: width / 100 * 3, elevation: Platform.OS == "android" ? width / 100 * 1 : width / 100 * 0.1, shadowOffset: { width: 2, height: 2 }, shadowOpacity: 0.2, shadowColor: LG_BG_THEME.APPTHEME_2, marginLeft: width / 100 * 2, marginRight: width / 100 * 2, opacity: item.isClicked == true ? 1 : 0.4 }}>
+                                                                    <View style={{ flex: 1,zIndex:-999, justifyContent: "center", flexDirection: 'row', marginBottom: width / 100 * 3, shadowOffset: { width: 2, height: 2 }, shadowOpacity: 0.2, shadowColor: LG_BG_THEME.APPTHEME_2, marginLeft: width / 100 * 2, marginRight: width / 100 * 2, opacity: item.isClicked == true ? 1 : 0.4 }}>
 
                                                                         <TouchableOpacity onPress={() => this.Container_Model("Code Items", true, item)} style={{ flex: 0.32, justifyContent: 'center', backgroundColor: item.isClicked == true ? LG_BG_THEME.APPTHEME_1 : LG_BG_THEME.WHITE_THEME, }}>
                                                                             <Text numberOfLines={2} style={item.isClicked == true ? styles.S2_Qty_WLMedium : styles.S2_Qty_BLMedium}>{" " + item.item_code}</Text>
@@ -1610,7 +1610,7 @@ class AddMore_Timesheet extends Component {
                                                                     </View>
 
                                                                     {item.additional_info == "1" ?
-                                                                        <View style={{ flex: 1, justifyContent: 'center', position: "absolute", flexDirection: "row", top: - (width / 100 * 1) }}>
+                                                                        <View style={{ flex: 1, justifyContent: 'center',zIndex:1000000, position: "absolute", flexDirection: "row", top: - (width / 100 * 1) }}>
                                                                             <View style={{ flex: 0.8, justifyContent: 'center', }} />
                                                                             <TouchableOpacity onPress={() => this.S2_InfoMethod(item, this.state.S2_Quatitylist_Response)} style={{ flex: 0.2, justifyContent: "flex-start", alignItems: "flex-start", }}>
                                                                                 <Image source={require('../../../../Asset/Icons/Ball_Info.png')} style={{ width: width / 100 * 5, height: width / 100 * 5, tintColor: LG_BG_THEME.LIGHTGREY_THEME, transform: [{ rotate: '0deg' }] }} />
