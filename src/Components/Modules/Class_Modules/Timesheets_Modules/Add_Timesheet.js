@@ -622,11 +622,6 @@ class Add_Timesheet extends Component {
        const fileTye= 'image/png;base64,';
        if(!Image_Path.encoded){
 
-           // if (Image_Path.startsWith('content://')) {
-    
-            //const filePath = Image_Path.split('raw%3A')[1].replace(/\%2F/gm, '/');
-          
-            
             const absolutePath = await RNFetchBlob.fs.stat(Image_Path)
             .then((stats) => {
                 console.log("##Imagestatus",stats.path);
@@ -642,7 +637,6 @@ class Add_Timesheet extends Component {
             .catch((err) => {
                 console.log("Error",err);
             }); 
-       // } 
       }  else {
         this.setState({Signature_Image:`${fileTye}${encoded}`});
        }       
@@ -1012,12 +1006,13 @@ class Add_Timesheet extends Component {
     }
 
     TS3_Method(RouteName, Route_Data) {
-
+        
+       
         if (RouteName == "Open") {
             this.setState({
                 S3_Infostatus: true
             })
-        } else {
+        } else {            
             if (this.state.S3_Section_No == "" && this.state.S3_Distance == "" && this.state.S3_Blockage == "" && this.state.S3_Desilt == "" && this.state.S3_New_Track == "" && this.state.S3_DFESlipNumber == "" && this.state.S3_Comments == "") {
                 Snackbar.show({
                     title: 'Enter any one of the info..!',
@@ -1664,7 +1659,6 @@ class Add_Timesheet extends Component {
                                                                         <TouchableOpacity onPress={() => this.Container_Model("Code Items", true, item)} style={{ flex: 0.32, justifyContent: 'center', backgroundColor: item.isClicked == true ? LG_BG_THEME.APPTHEME_1 : LG_BG_THEME.WHITE_THEME, }}>
                                                                             <Text numberOfLines={2} style={item.isClicked == true ? styles.S2_Qty_WLMedium : styles.S2_Qty_BLMedium}>{" " + item.item_code}</Text>
                                                                             <Image source={require('../../../../Asset/Icons/search.png')} style={{ width: width / 100 * 3, height: width / 100 * 3, tintColor: item.isClicked == false ? LG_BG_THEME.APPTHEME_1 : LG_BG_THEME.WHITE_THEME, position: "absolute", marginLeft: width / 100 * 1 }} />
-
                                                                         </TouchableOpacity>
 
                                                                         <View style={{ flex: 0.2, justifyContent: 'center', backgroundColor: item.isClicked == true ? LG_BG_THEME.APPTHEME_1 : LG_BG_THEME.WHITE_THEME, opacity: 0.8 }}>
@@ -1712,7 +1706,7 @@ class Add_Timesheet extends Component {
                                                                         </View>
 
                                                                     </View>
-                                                                    {/* {item.additional_info == "1" && item.isClicked == true ?
+                                                                    {item.additional_info == "1" && item.isClicked == true ?
                                                                         <View style={{ flex: 1, justifyContent: 'center',zIndex:100000, position: "absolute", flexDirection: "row", top: - (width / 100 * 1) }}>
                                                                             <View style={{ flex: 0.8, justifyContent: 'center', }} />
                                                                             <TouchableOpacity onPress={() => this.S2_InfoMethod(item, this.state.S2_Quatitylist_Response)} style={{ flex: 0.2, justifyContent: "flex-start", alignItems: "flex-start", }}>
@@ -1723,7 +1717,7 @@ class Add_Timesheet extends Component {
                                                                         :
 
                                                                         null
-                                                                    } */}
+                                                                    }
                                                                 </View>
 
 
@@ -1739,6 +1733,7 @@ class Add_Timesheet extends Component {
                                                         <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }}>
 
                                                             <View style={{ flex: 1, justifyContent: "center" }}>
+                                                               
                                                                 {
                                                                     this.state.S3_Infostatus == true ?
 
@@ -1971,7 +1966,7 @@ class Add_Timesheet extends Component {
 
                                                                                 {this.state.S3_InfoArray.map((item, index) => (
 
-                                                                                    <View style={{ height: height / 100 * 7, justifyContent: "center", flexDirection: 'row', marginBottom: width / 100 * 3, elevation: Platform.OS == "android" ? width / 100 * 1 : width / 100 * 0.1, shadowOffset: { width: 2, height: 2 }, shadowOpacity: 0.2, shadowColor: LG_BG_THEME.APPTHEME_2, }}>
+                                                                                    <View style={{ height: height / 100 * 7, justifyContent: "flex-start", flexDirection: 'row', marginBottom: width / 100 * 3, elevation: Platform.OS == "android" ? width / 100 * 1 : width / 100 * 0.1, shadowOffset: { width: 2, height: 2 }, shadowOpacity: 0.2, shadowColor: LG_BG_THEME.APPTHEME_2, }}>
                                                                                         <TouchableOpacity onPress={() => this.Container_Model("Info Items", true, item)} style={{ flex: 0.3, justifyContent: 'center', backgroundColor: LG_BG_THEME.WHITE_THEME, opacity: 0.8 }}>
                                                                                             <Text style={styles.S2_container_BlackText}>{item.section_no}</Text>
                                                                                             <Image source={require('../../../../Asset/Icons/search.png')} style={{ width: width / 100 * 4, height: width / 100 * 4, tintColor: LG_BG_THEME.APPTHEME_1, position: "absolute", marginLeft: width / 100 * 1 }} />
@@ -1983,9 +1978,12 @@ class Add_Timesheet extends Component {
                                                                                         <View style={{ flex: 0.4, justifyContent: 'center', backgroundColor: LG_BG_THEME.WHITE_THEME, opacity: 0.8 }}>
                                                                                             <Text style={styles.S2_container_BlackText}>{item.blockage}</Text>
                                                                                         </View>
+                                                                                       
+                                                                                        {item.Is_Status !==true &&
                                                                                         <TouchableOpacity onPress={() => this.S3_ToggleMethod(item, index)} style={{ flex: 0.1, justifyContent: 'center', alignItems: 'center' }}>
                                                                                             <Image source={require('../../../../Asset/Icons/Delete_Icon.png')} style={{ width: width / 100 * 5, height: width / 100 * 5, tintColor: LG_BG_THEME.APPTHEME_BLACK, }} />
                                                                                         </TouchableOpacity>
+                                                                                          }
                                                                                     </View>
                                                                                 ))}
 
