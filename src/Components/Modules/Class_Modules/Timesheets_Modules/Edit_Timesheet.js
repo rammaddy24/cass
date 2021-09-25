@@ -826,14 +826,25 @@ class Edit_Timesheet extends Component {
             } else if (this.state.Add_TimesheetScreenIndex == 2) {
                 if (Route_Data == "Prev") {
                     this.setState({
+               
                         Add_TimesheetScreen: "Step 1",
                         Add_TimesheetScreenIndex: 1
                     })
                 } else {
-
+                    var C2_QtyArraylist = 0
+                    for (let i = 0; i < this.state.S2_Quatitylist_Response.length; i++) {
+                        if (this.state.S2_Quatitylist_Response[i].Is_QtyCount != 0 && this.state.S2_Quatitylist_Response[i].additional_info == "1") {
+                            C2_QtyArraylist = +1
+                        }
+                    }
                     if (this.state.S2_Qty_Count == 0) {
                         Snackbar.show({
                             title: 'Select Work Items..!',
+                            duration: Snackbar.LENGTH_SHORT,
+                        });
+                    } else if (C2_QtyArraylist != this.state.S3_InfoArray.length) {
+                        Snackbar.show({
+                            title: 'Enter Additional Info..!',
                             duration: Snackbar.LENGTH_SHORT,
                         });
                     } else {
@@ -1779,8 +1790,7 @@ class Edit_Timesheet extends Component {
                                                             {this.state.S2_Quatitylist_Response.map((item, index) => (
                                                                 <View style={{ height: height / 100 * 8, justifyContent: "center", }}>
 
-                                                                    <View style={{ flex: 1, justifyContent: "center", flexDirection: 'row', marginBottom: width / 100 * 3, elevation: Platform.OS == "android" ? width / 100 * 1 : width / 100 * 0.1, shadowOffset: { width: 2, height: 2 }, shadowOpacity: 0.2, shadowColor: LG_BG_THEME.APPTHEME_2, marginLeft: width / 100 * 2, marginRight: width / 100 * 2, opacity: item.isClicked == true ? 1 : 0.4 }}>
-
+                                                                    <View style={{ flex: 1,zIndex:-999, justifyContent: "center", flexDirection: 'row', marginBottom: width / 100 * 3, shadowOffset: { width: 2, height: 2 }, shadowOpacity: 0.2, shadowColor: LG_BG_THEME.APPTHEME_2, marginLeft: width / 100 * 2, marginRight: width / 100 * 2, opacity: item.isClicked == true ? 1 : 0.4 }}>
                                                                         <TouchableOpacity onPress={() => this.Container_Model("Code Items", true, item)} style={{ flex: 0.32, justifyContent: 'center', backgroundColor: item.isClicked == true ? LG_BG_THEME.APPTHEME_1 : LG_BG_THEME.WHITE_THEME, }}>
                                                                             <Text numberOfLines={2} style={item.isClicked == true ? styles.S2_Qty_WLMedium : styles.S2_Qty_BLMedium}>{" " + item.item_code}</Text>
                                                                             <Image source={require('../../../../Asset/Icons/search.png')} style={{ width: width / 100 * 3, height: width / 100 * 3, tintColor: item.isClicked == false ? LG_BG_THEME.APPTHEME_1 : LG_BG_THEME.WHITE_THEME, position: "absolute", marginLeft: width / 100 * 1 }} />
@@ -1833,7 +1843,7 @@ class Edit_Timesheet extends Component {
                                                                     </View>
 
                                                                     {item.additional_info == "1" ?
-                                                                        <View style={{ flex: 1, justifyContent: 'center', position: "absolute", flexDirection: "row", top: - (width / 100 * 1) }}>
+                                                                         <View style={{ flex: 1, justifyContent: 'center',zIndex:1000000, position: "absolute", flexDirection: "row", top: - (width / 100 * 1) }}>
                                                                             <View style={{ flex: 0.8, justifyContent: 'center', }} />
                                                                             <TouchableOpacity onPress={() => this.S2_InfoMethod(item, this.state.S2_Quatitylist_Response)} style={{ flex: 0.2, justifyContent: "flex-start", alignItems: "flex-start", }}>
                                                                                 <Image source={require('../../../../Asset/Icons/Ball_Info.png')} style={{ width: width / 100 * 5, height: width / 100 * 5, tintColor: LG_BG_THEME.LIGHTGREY_THEME, transform: [{ rotate: '0deg' }] }} />
@@ -1868,7 +1878,7 @@ class Edit_Timesheet extends Component {
                                                                             <View style={styles.container_TextInputOverview}>
                                                                                 <View style={{ flex: 1, justifyContent: "center", }}>
                                                                                     <TextInput
-                                                                                        placeholder='Section No'
+                                                                                        placeholder='Section No / Chamber ID'
                                                                                         ref='Section_No'
                                                                                         returnKeyType='next'
                                                                                       //  keyboardType={"numeric"}
@@ -1887,7 +1897,7 @@ class Edit_Timesheet extends Component {
                                                                             <View style={styles.container_TextInputOverview}>
                                                                                 <View style={{ flex: 1, justifyContent: "center", }}>
                                                                                     <TextInput
-                                                                                        placeholder='Distance'
+                                                                                        placeholder='Distance (m)'
                                                                                         ref='Distance'
                                                                                         returnKeyType='next'
                                                                                      //   keyboardType={"numeric"}
@@ -1906,7 +1916,7 @@ class Edit_Timesheet extends Component {
                                                                             <View style={styles.container_TextInputOverview}>
                                                                                 <View style={{ flex: 1, justifyContent: "center", }}>
                                                                                     <TextInput
-                                                                                        placeholder='Blockage'
+                                                                                        placeholder='Blockage / Per A55'
                                                                                         ref='Blockage'
                                                                                         returnKeyType='next'
                                                                                        // keyboardType={"numeric"}
@@ -1926,7 +1936,7 @@ class Edit_Timesheet extends Component {
                                                                             <View style={styles.container_TextInputOverview}>
                                                                                 <View style={{ flex: 1, justifyContent: "center", }}>
                                                                                     <TextInput
-                                                                                        placeholder='Desilt'
+                                                                                        placeholder='CBTs'
                                                                                         ref='Desilt'
                                                                                         returnKeyType='next'
                                                                                       //  keyboardType={"numeric"}
@@ -1947,7 +1957,7 @@ class Edit_Timesheet extends Component {
                                                                             <View style={styles.container_TextInputOverview}>
                                                                                 <View style={{ flex: 1, justifyContent: "center", }}>
                                                                                     <TextInput
-                                                                                        placeholder='New Track'
+                                                                                        placeholder='Bars'
                                                                                         ref='New_Track'
                                                                                         returnKeyType='next'
                                                                                        // keyboardType={"numeric"}
@@ -1968,7 +1978,7 @@ class Edit_Timesheet extends Component {
                                                                             <View style={styles.container_TextInputOverview}>
                                                                                 <View style={{ flex: 1, justifyContent: "center", }}>
                                                                                     <TextInput
-                                                                                        placeholder='DFE Slip Number'
+                                                                                        placeholder='Mobras'
                                                                                         ref='DFESlipNumber'
                                                                                         returnKeyType='next'
                                                                                         //keyboardType={"numeric"}
@@ -2077,13 +2087,13 @@ class Edit_Timesheet extends Component {
 
                                                                                 <View style={{ height: height / 100 * 6, justifyContent: "center", flexDirection: 'row', opacity: 0.8 }}>
                                                                                     <View style={{ flex: 0.3, justifyContent: 'center', }}>
-                                                                                        <Text style={styles.S2_container_BlackText}>{"Section No"}</Text>
+                                                                                        <Text style={styles.S2_container_BlackText}>{"Section No / Chamber ID"}</Text>
                                                                                     </View>
                                                                                     <View style={{ flex: 0.2, justifyContent: 'center', }}>
-                                                                                        <Text style={styles.S2_container_BlackText}>{"Dist"}</Text>
+                                                                                        <Text style={styles.S2_container_BlackText}>{"Distance (m)"}</Text>
                                                                                     </View>
                                                                                     <View style={{ flex: 0.4, justifyContent: 'center', }}>
-                                                                                        <Text style={styles.S2_container_BlackText}>{"Blockage"}</Text>
+                                                                                        <Text style={styles.S2_container_BlackText}>{"Blockage / Per A55"}</Text>
                                                                                     </View>
                                                                                     <View style={{ flex: 0.1, justifyContent: 'center', }} />
                                                                                 </View>
@@ -2192,7 +2202,10 @@ class Edit_Timesheet extends Component {
                                                                                             }
                                                                                         }}
                                                                                         onSubmitEditing={() => this.Timesheet_Method("Next")}
-                                                                                        value={this.state.Engineer_Edited == true ? this.state.S4_CostPercentage_AE[index] == undefined ? "0.0" : this.state.S4_CostPercentage_AE[index] : (this.state.S4_CostPercentage_BE[index] == undefined ? "0.0" : this.state.S4_CostPercentage_BE[index])}
+                                                                                        value={this.state.Engineer_Edited == true ? this.state.S4_CostPercentage_AE[index] == undefined ? "0.0" : 
+                                                                                         parseInt(this.state.S4_CostPercentage_AE[index]).toFixed(0)
+                                                                                         : (this.state.S4_CostPercentage_BE[index] == undefined ? "0.0" :
+                                                                                         parseInt( this.state.S4_CostPercentage_BE[index]).toFixed(0))}
                                                                                     />
                                                                                 </View>
 
@@ -2539,13 +2552,13 @@ class Edit_Timesheet extends Component {
 
                                                                                                     <View style={{ height: height / 100 * 6, justifyContent: "center", flexDirection: 'row', opacity: 0.8 }}>
                                                                                                         <View style={{ flex: 0.3, justifyContent: 'center', }}>
-                                                                                                            <Text style={styles.S2_container_BlackText}>{"Section No"}</Text>
+                                                                                                            <Text style={styles.S2_container_BlackText}>{"Section No / Chamber ID"}</Text>
                                                                                                         </View>
                                                                                                         <View style={{ flex: 0.2, justifyContent: 'center', }}>
-                                                                                                            <Text style={styles.S2_container_BlackText}>{"Dist"}</Text>
+                                                                                                            <Text style={styles.S2_container_BlackText}>{"Distance (m)"}</Text>
                                                                                                         </View>
                                                                                                         <View style={{ flex: 0.4, justifyContent: 'center', }}>
-                                                                                                            <Text style={styles.S2_container_BlackText}>{"Blockage"}</Text>
+                                                                                                            <Text style={styles.S2_container_BlackText}>{"Blockage / Per A55"}</Text>
                                                                                                         </View>
                                                                                                         <View style={{ flex: 0.1, justifyContent: 'center', }} />
                                                                                                     </View>
@@ -2955,22 +2968,22 @@ class Edit_Timesheet extends Component {
                                                             <View style={{ flex: 1, justifyContent: "center", opacity: 0.6, marginLeft: width / 100 * 2 }}>
 
                                                                 <View style={{ height: width / 100 * 8, justifyContent: 'center' }}>
-                                                                    <Text numberOfLines={2} style={styles.Modal_TextStyle}>{"Section No : " + this.state.Modal_SectionNo}</Text>
+                                                                    <Text numberOfLines={2} style={styles.Modal_TextStyle}>{"Section No / Chamber ID : " + this.state.Modal_SectionNo}</Text>
                                                                 </View>
                                                                 <View style={{ height: width / 100 * 8, justifyContent: 'center' }}>
-                                                                    <Text numberOfLines={2} style={styles.Modal_TextStyle}>{"Distance : " + this.state.Modal_Distance}</Text>
+                                                                    <Text numberOfLines={2} style={styles.Modal_TextStyle}>{"Distance (m) : " + this.state.Modal_Distance}</Text>
                                                                 </View>
                                                                 <View style={{ height: width / 100 * 8, justifyContent: 'center' }}>
-                                                                    <Text numberOfLines={2} style={styles.Modal_TextStyle}>{"Blockage : " + this.state.Modal_Blockage}</Text>
+                                                                    <Text numberOfLines={2} style={styles.Modal_TextStyle}>{"Blockage / Per A55 : " + this.state.Modal_Blockage}</Text>
                                                                 </View>
                                                                 <View style={{ height: width / 100 * 8, justifyContent: 'center' }}>
-                                                                    <Text numberOfLines={2} style={styles.Modal_TextStyle}>{"Desiit : " + this.state.Modal_Desiit}</Text>
+                                                                    <Text numberOfLines={2} style={styles.Modal_TextStyle}>{"CBTs : " + this.state.Modal_Desiit}</Text>
                                                                 </View>
                                                                 <View style={{ height: width / 100 * 8, justifyContent: 'center' }}>
-                                                                    <Text numberOfLines={2} style={styles.Modal_TextStyle}>{"New Track : " + this.state.Modal_Newtrack}</Text>
+                                                                    <Text numberOfLines={2} style={styles.Modal_TextStyle}>{"Bars : " + this.state.Modal_Newtrack}</Text>
                                                                 </View>
                                                                 <View style={{ height: width / 100 * 8, justifyContent: 'center' }}>
-                                                                    <Text numberOfLines={2} style={styles.Modal_TextStyle}>{"Slip No : " + this.state.Modal_SlipNo}</Text>
+                                                                    <Text numberOfLines={2} style={styles.Modal_TextStyle}>{"Mobras : " + this.state.Modal_SlipNo}</Text>
                                                                 </View>
                                                                 <View style={{ height: width / 100 * 8, justifyContent: 'center' }}>
                                                                     <Text numberOfLines={2} style={styles.Modal_TextStyle}>{"Slip Comments : " + this.state.Modal_SlipComments}</Text>
@@ -3099,7 +3112,7 @@ class Edit_Timesheet extends Component {
                                         <View style={styles.container_TextInputOverview}>
                                             <View style={{ flex: 1, justifyContent: "center", }}>
                                                 <TextInput
-                                                    placeholder='Section No'
+                                                    placeholder='Section No / Chamber ID'
                                                     ref='Section_No'
                                                     returnKeyType='next'
                                                   //  keyboardType={"numeric"}
@@ -3118,7 +3131,7 @@ class Edit_Timesheet extends Component {
                                         <View style={styles.container_TextInputOverview}>
                                             <View style={{ flex: 1, justifyContent: "center", }}>
                                                 <TextInput
-                                                    placeholder='Distance'
+                                                    placeholder='Distance (m)'
                                                     ref='Distance'
                                                     returnKeyType='next'
                                                    // keyboardType={"numeric"}
@@ -3137,7 +3150,7 @@ class Edit_Timesheet extends Component {
                                         <View style={styles.container_TextInputOverview}>
                                             <View style={{ flex: 1, justifyContent: "center", }}>
                                                 <TextInput
-                                                    placeholder='Blockage'
+                                                    placeholder='Blockage / Per A55'
                                                     ref='Blockage'
                                                     returnKeyType='next'
                                                    // keyboardType={"numeric"}
@@ -3157,7 +3170,7 @@ class Edit_Timesheet extends Component {
                                         <View style={styles.container_TextInputOverview}>
                                             <View style={{ flex: 1, justifyContent: "center", }}>
                                                 <TextInput
-                                                    placeholder='Desilt'
+                                                    placeholder='CBTs'
                                                     ref='Desilt'
                                                     returnKeyType='next'
                                                   //  keyboardType={"numeric"}
@@ -3178,7 +3191,7 @@ class Edit_Timesheet extends Component {
                                         <View style={styles.container_TextInputOverview}>
                                             <View style={{ flex: 1, justifyContent: "center", }}>
                                                 <TextInput
-                                                    placeholder='New Track'
+                                                    placeholder='Bars'
                                                     ref='New_Track'
                                                     returnKeyType='next'
                                                    // keyboardType={"numeric"}
@@ -3199,7 +3212,7 @@ class Edit_Timesheet extends Component {
                                         <View style={styles.container_TextInputOverview}>
                                             <View style={{ flex: 1, justifyContent: "center", }}>
                                                 <TextInput
-                                                    placeholder='DFE Slip Number'
+                                                    placeholder='Mobras'
                                                     ref='DFESlipNumber'
                                                     returnKeyType='next'
                                                     //keyboardType={"numeric"}

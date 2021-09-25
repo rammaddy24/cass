@@ -733,13 +733,24 @@ class AddMore_Timesheet extends Component {
                         Add_TimesheetScreenIndex: 1
                     })
                 } else {
-
+                    var C2_QtyArraylist = 0
+                    for (let i = 0; i < this.state.S2_Quatitylist_Response.length; i++) {
+                        if (this.state.S2_Quatitylist_Response[i].Is_QtyCount != 0 && this.state.S2_Quatitylist_Response[i].additional_info == "1") {
+                            C2_QtyArraylist = +1
+                        }
+                    }
                     if (this.state.S2_Qty_Count == 0) {
                         Snackbar.show({
                             title: 'Select Work Items..!',
                             duration: Snackbar.LENGTH_SHORT,
                         });
-                    } else {
+                    }  else if (C2_QtyArraylist != this.state.S3_InfoArray.length) {
+                        Snackbar.show({
+                            title: 'Enter Additional Info..!',
+                            duration: Snackbar.LENGTH_SHORT,
+                        });
+                    } 
+                    else {
                         this.setState({
                             Add_TimesheetScreen: "Step 3",
                             Add_TimesheetScreenIndex: 3
@@ -1852,13 +1863,13 @@ class AddMore_Timesheet extends Component {
 
                                                                                 <View style={{ height: height / 100 * 6, justifyContent: "center", flexDirection: 'row', opacity: 0.8 }}>
                                                                                     <View style={{ flex: 0.3, justifyContent: 'center', }}>
-                                                                                        <Text style={styles.S2_container_BlackText}>{"Section No"}</Text>
+                                                                                        <Text style={styles.S2_container_BlackText}>{"Section No / Chamber ID"}</Text>
                                                                                     </View>
                                                                                     <View style={{ flex: 0.2, justifyContent: 'center', }}>
-                                                                                        <Text style={styles.S2_container_BlackText}>{"Dist"}</Text>
+                                                                                        <Text style={styles.S2_container_BlackText}>{"Distance (m)"}</Text>
                                                                                     </View>
                                                                                     <View style={{ flex: 0.4, justifyContent: 'center', }}>
-                                                                                        <Text style={styles.S2_container_BlackText}>{"Blockage"}</Text>
+                                                                                        <Text style={styles.S2_container_BlackText}>{"Blockage / Per A55"}</Text>
                                                                                     </View>
                                                                                     <View style={{ flex: 0.1, justifyContent: 'center', }} />
                                                                                 </View>
@@ -2294,13 +2305,13 @@ class AddMore_Timesheet extends Component {
 
                                                                                                     <View style={{ height: height / 100 * 6, justifyContent: "center", flexDirection: 'row', opacity: 0.8 }}>
                                                                                                         <View style={{ flex: 0.3, justifyContent: 'center', }}>
-                                                                                                            <Text style={styles.S2_container_BlackText}>{"Section No"}</Text>
+                                                                                                            <Text style={styles.S2_container_BlackText}>{"Section No / Chamber ID"}</Text>
                                                                                                         </View>
                                                                                                         <View style={{ flex: 0.2, justifyContent: 'center', }}>
-                                                                                                            <Text style={styles.S2_container_BlackText}>{"Dist"}</Text>
+                                                                                                            <Text style={styles.S2_container_BlackText}>{"Distance (m)"}</Text>
                                                                                                         </View>
                                                                                                         <View style={{ flex: 0.4, justifyContent: 'center', }}>
-                                                                                                            <Text style={styles.S2_container_BlackText}>{"Blockage"}</Text>
+                                                                                                            <Text style={styles.S2_container_BlackText}>{"Blockage / Per A55"}</Text>
                                                                                                         </View>
                                                                                                         <View style={{ flex: 0.1, justifyContent: 'center', }} />
                                                                                                     </View>
@@ -2704,22 +2715,22 @@ class AddMore_Timesheet extends Component {
                                                             <View style={{ flex: 1, justifyContent: "center", opacity: 0.6, marginLeft: width / 100 * 2 }}>
 
                                                                 <View style={{ height: width / 100 * 8, justifyContent: 'center' }}>
-                                                                    <Text numberOfLines={2} style={styles.Modal_TextStyle}>{"Section No : " + this.state.Modal_SectionNo}</Text>
+                                                                    <Text numberOfLines={2} style={styles.Modal_TextStyle}>{"Section No / Chamber ID : " + this.state.Modal_SectionNo}</Text>
                                                                 </View>
                                                                 <View style={{ height: width / 100 * 8, justifyContent: 'center' }}>
-                                                                    <Text numberOfLines={2} style={styles.Modal_TextStyle}>{"Distance : " + this.state.Modal_Distance}</Text>
+                                                                    <Text numberOfLines={2} style={styles.Modal_TextStyle}>{"Distance (m) : " + this.state.Modal_Distance}</Text>
                                                                 </View>
                                                                 <View style={{ height: width / 100 * 8, justifyContent: 'center' }}>
-                                                                    <Text numberOfLines={2} style={styles.Modal_TextStyle}>{"Blockage : " + this.state.Modal_Blockage}</Text>
+                                                                    <Text numberOfLines={2} style={styles.Modal_TextStyle}>{"Blockage / Per A55 : " + this.state.Modal_Blockage}</Text>
                                                                 </View>
                                                                 <View style={{ height: width / 100 * 8, justifyContent: 'center' }}>
-                                                                    <Text numberOfLines={2} style={styles.Modal_TextStyle}>{"Desiit : " + this.state.Modal_Desiit}</Text>
+                                                                    <Text numberOfLines={2} style={styles.Modal_TextStyle}>{"CBTs : " + this.state.Modal_Desiit}</Text>
                                                                 </View>
                                                                 <View style={{ height: width / 100 * 8, justifyContent: 'center' }}>
-                                                                    <Text numberOfLines={2} style={styles.Modal_TextStyle}>{"New Track : " + this.state.Modal_Newtrack}</Text>
+                                                                    <Text numberOfLines={2} style={styles.Modal_TextStyle}>{"Bars: " + this.state.Modal_Newtrack}</Text>
                                                                 </View>
                                                                 <View style={{ height: width / 100 * 8, justifyContent: 'center' }}>
-                                                                    <Text numberOfLines={2} style={styles.Modal_TextStyle}>{"Slip No : " + this.state.Modal_SlipNo}</Text>
+                                                                    <Text numberOfLines={2} style={styles.Modal_TextStyle}>{"Mobras : " + this.state.Modal_SlipNo}</Text>
                                                                 </View>
                                                                 <View style={{ height: width / 100 * 8, justifyContent: 'center' }}>
                                                                     <Text numberOfLines={2} style={styles.Modal_TextStyle}>{"Slip Comments : " + this.state.Modal_SlipComments}</Text>
@@ -2848,7 +2859,7 @@ class AddMore_Timesheet extends Component {
                                         <View style={styles.container_TextInputOverview}>
                                             <View style={{ flex: 1, justifyContent: "center", }}>
                                                 <TextInput
-                                                    placeholder='Section No'
+                                                    placeholder='Section No / Chamber ID'
                                                     ref='Section_No'
                                                     returnKeyType='next'
                                                    // keyboardType={"numeric"}
@@ -2867,7 +2878,7 @@ class AddMore_Timesheet extends Component {
                                         <View style={styles.container_TextInputOverview}>
                                             <View style={{ flex: 1, justifyContent: "center", }}>
                                                 <TextInput
-                                                    placeholder='Distance'
+                                                    placeholder='Distance (m)'
                                                     ref='Distance'
                                                     returnKeyType='next'
                                                    // keyboardType={"numeric"}
@@ -2886,7 +2897,7 @@ class AddMore_Timesheet extends Component {
                                         <View style={styles.container_TextInputOverview}>
                                             <View style={{ flex: 1, justifyContent: "center", }}>
                                                 <TextInput
-                                                    placeholder='Blockage'
+                                                    placeholder='Blockage / Per A55'
                                                     ref='Blockage'
                                                     returnKeyType='next'
                                                     //keyboardType={"numeric"}
@@ -2906,7 +2917,7 @@ class AddMore_Timesheet extends Component {
                                         <View style={styles.container_TextInputOverview}>
                                             <View style={{ flex: 1, justifyContent: "center", }}>
                                                 <TextInput
-                                                    placeholder='Desilt'
+                                                    placeholder='CBTs'
                                                     ref='Desilt'
                                                     returnKeyType='next'
                                                     //keyboardType={"numeric"}
@@ -2927,7 +2938,7 @@ class AddMore_Timesheet extends Component {
                                         <View style={styles.container_TextInputOverview}>
                                             <View style={{ flex: 1, justifyContent: "center", }}>
                                                 <TextInput
-                                                    placeholder='New Track'
+                                                    placeholder='Bars'
                                                     ref='New_Track'
                                                     returnKeyType='next'
                                                   //  keyboardType={"numeric"}
@@ -2948,7 +2959,7 @@ class AddMore_Timesheet extends Component {
                                         <View style={styles.container_TextInputOverview}>
                                             <View style={{ flex: 1, justifyContent: "center", }}>
                                                 <TextInput
-                                                    placeholder='DFE Slip Number'
+                                                    placeholder='Mobras'
                                                     ref='DFESlipNumber'
                                                     returnKeyType='next'
                                                     //keyboardType={"numeric"}

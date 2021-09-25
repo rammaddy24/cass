@@ -704,12 +704,12 @@ class Add_Timesheet extends Component {
                             duration: Snackbar.LENGTH_SHORT,
                         });
                      } 
-                   // else if (C2_QtyArraylist != this.state.S3_InfoArray.length) {
-                    //     Snackbar.show({
-                    //         title: 'Enter Additional Info..!',
-                    //         duration: Snackbar.LENGTH_SHORT,
-                    //     });
-                    // } 
+                   else if (C2_QtyArraylist != this.state.S3_InfoArray.length) {
+                        Snackbar.show({
+                            title: 'Enter Additional Info..!',
+                            duration: Snackbar.LENGTH_SHORT,
+                        });
+                    } 
                     else {
                         this.setState({
                             Add_TimesheetScreen: "Step 3",
@@ -1041,8 +1041,8 @@ class Add_Timesheet extends Component {
                  }
                 else {
                     this.setState({
-                       // S3_Section_No: "", S3_Distance: "", S3_Blockage: "",
-                       // S3_Desilt: "", S3_New_Track: "", S3_DFESlipNumber: "", S3_Comments: "", S3_Infostatus: false,
+                     //   S3_Section_No: "", S3_Distance: "", S3_Blockage: "",
+                      //  S3_Desilt: "", S3_New_Track: "", S3_DFESlipNumber: "", S3_Comments: "", S3_Infostatus: false,
                          AddionalInfo_Modal: false,
                          S3_Infostatus:false
                     })
@@ -1604,7 +1604,7 @@ class Add_Timesheet extends Component {
                                                     <View style={styles.Container_EP_2} />
 
                                                     <View style={{ height: height / 100 * 8, justifyContent: "center", backgroundColor: LG_BG_THEME.APPTHEME_2 }}>
-                                                        <Text style={styles.Bar_HeaderText}>{"Total Pay for job - Â£ "}<Text style={styles.Bar_HeaderText}>{this.state.S2_Qty_Amount.toFixed(2)}</Text><Text style={styles.Bar_HeaderText}>{" (Units - " + this.state.S2_Qty_Results_Units + ")"}</Text></Text>
+                                                        <Text style={styles.Bar_HeaderText}>{"Total Pay for job - £ "}<Text style={styles.Bar_HeaderText}>{this.state.S2_Qty_Amount.toFixed(2)}</Text><Text style={styles.Bar_HeaderText}>{" (Units - " + this.state.S2_Qty_Results_Units + ")"}</Text></Text>
                                                     </View>
 
                                                     <View style={styles.Container_EP_3} />
@@ -1685,11 +1685,11 @@ class Add_Timesheet extends Component {
                                                                         <View style={{ flex: 0.33, justifyContent: 'center', backgroundColor: item.isClicked == true ? LG_BG_THEME.APPTHEME_1 : LG_BG_THEME.WHITE_THEME, }}>
                                                                             <View style={{ flex: 0.05, justifyContent: 'center' }} />
                                                                             <View style={{ flex: 0.45, justifyContent: 'center' }}>
-                                                                                <Text numberOfLines={2} style={item.isClicked == true ? styles.S2_Qty_WMedium : styles.S2_Qty_BMedium}>{isNaN((item.engineer_pay_price * item.Is_QtyCount).toFixed(2)) == true ? "Â£ 0.0" : "Â£ " + (item.engineer_pay_price * item.Is_QtyCount).toFixed(2)}</Text>
+                                                                                <Text numberOfLines={2} style={item.isClicked == true ? styles.S2_Qty_WMedium : styles.S2_Qty_BMedium}>{isNaN((item.engineer_pay_price * item.Is_QtyCount).toFixed(2)) == true ? "£ 0.0" : "£ " + (item.engineer_pay_price * item.Is_QtyCount).toFixed(2)}</Text>
                                                                             </View>
 
                                                                             <View style={{ flex: 0.45, justifyContent: 'center' }}>
-                                                                                <Text numberOfLines={2} style={item.isClicked == true ? styles.S2_Qty_WSmall : styles.S2_Qty_BSmall}>{"Â£ " + item.engineer_pay_price + " (PP)"}</Text>
+                                                                                <Text numberOfLines={2} style={item.isClicked == true ? styles.S2_Qty_WSmall : styles.S2_Qty_BSmall}>{"£ " + item.engineer_pay_price + " (PP)"}</Text>
                                                                             </View>
 
                                                                             <View style={{ flex: 0.05, justifyContent: 'center' }} />
@@ -1745,7 +1745,7 @@ class Add_Timesheet extends Component {
                                                                             <View style={styles.container_TextInputOverview}>
                                                                                 <View style={{ flex: 1, justifyContent: "center", }}>
                                                                                     <TextInput
-                                                                                        placeholder='Section No'
+                                                                                        placeholder='Section No / Chamber ID'
                                                                                         ref='Section_No'
                                                                                         returnKeyType='next'
                                                                                        // keyboardType={"numeric"}
@@ -1764,7 +1764,7 @@ class Add_Timesheet extends Component {
                                                                             <View style={styles.container_TextInputOverview}>
                                                                                 <View style={{ flex: 1, justifyContent: "center", }}>
                                                                                     <TextInput
-                                                                                        placeholder='Distance'
+                                                                                        placeholder='Distance (m)'
                                                                                         ref='Distance'
                                                                                         returnKeyType='next'
                                                                                         keyboardType={"numeric"}
@@ -1783,7 +1783,7 @@ class Add_Timesheet extends Component {
                                                                             <View style={styles.container_TextInputOverview}>
                                                                                 <View style={{ flex: 1, justifyContent: "center", }}>
                                                                                     <TextInput
-                                                                                        placeholder='Blockage'
+                                                                                        placeholder='Blockage / Per A55'
                                                                                         ref='Blockage'
                                                                                         returnKeyType='next'
                                                                                         keyboardType={"numeric"}
@@ -1803,7 +1803,7 @@ class Add_Timesheet extends Component {
                                                                             <View style={styles.container_TextInputOverview}>
                                                                                 <View style={{ flex: 1, justifyContent: "center", }}>
                                                                                     <TextInput
-                                                                                        placeholder='Desilt'
+                                                                                        placeholder='CBTs'
                                                                                         ref='Desilt'
                                                                                         returnKeyType='next'
                                                                                         keyboardType={"numeric"}
@@ -1824,7 +1824,7 @@ class Add_Timesheet extends Component {
                                                                             <View style={styles.container_TextInputOverview}>
                                                                                 <View style={{ flex: 1, justifyContent: "center", }}>
                                                                                     <TextInput
-                                                                                        placeholder='New Track'
+                                                                                        placeholder='Bars'
                                                                                         ref='New_Track'
                                                                                         returnKeyType='next'
                                                                                         keyboardType={"numeric"}
@@ -1845,7 +1845,7 @@ class Add_Timesheet extends Component {
                                                                             <View style={styles.container_TextInputOverview}>
                                                                                 <View style={{ flex: 1, justifyContent: "center", }}>
                                                                                     <TextInput
-                                                                                        placeholder='DFE Slip Number'
+                                                                                        placeholder='Mobras'
                                                                                         ref='DFESlipNumber'
                                                                                         returnKeyType='next'
                                                                                         //keyboardType={"numeric"}
@@ -1953,13 +1953,13 @@ class Add_Timesheet extends Component {
 
                                                                                 <View style={{ height: height / 100 * 6, justifyContent: "center", flexDirection: 'row', opacity: 0.8 }}>
                                                                                     <View style={{ flex: 0.3, justifyContent: 'center', }}>
-                                                                                        <Text style={styles.S2_container_BlackText}>{"Section No"}</Text>
+                                                                                        <Text style={styles.S2_container_BlackText}>{"Section No / Chamber ID"}</Text>
                                                                                     </View>
                                                                                     <View style={{ flex: 0.2, justifyContent: 'center', }}>
-                                                                                        <Text style={styles.S2_container_BlackText}>{"Dist"}</Text>
+                                                                                        <Text style={styles.S2_container_BlackText}>{"Distance (m)"}</Text>
                                                                                     </View>
                                                                                     <View style={{ flex: 0.4, justifyContent: 'center', }}>
-                                                                                        <Text style={styles.S2_container_BlackText}>{"Blockage"}</Text>
+                                                                                        <Text style={styles.S2_container_BlackText}>{"Blockage / Per A55"}</Text>
                                                                                     </View>
                                                                                     <View style={{ flex: 0.1, justifyContent: 'center', }} />
                                                                                 </View>
@@ -2025,7 +2025,7 @@ class Add_Timesheet extends Component {
                                                             <View style={styles.Container_EP_2} />
 
                                                             <View style={{ height: height / 100 * 8, justifyContent: "center", backgroundColor: LG_BG_THEME.APPTHEME_2 }}>
-                                                                <Text style={styles.Bar_HeaderText}>{"Total Pay for job - Â£ "}<Text style={styles.Bar_HeaderText}>{this.state.S2_Qty_Amount.toFixed(2)}</Text><Text style={styles.Bar_HeaderText}>{" (Units - " + this.state.S2_Qty_Results_Units + ")"}</Text></Text>
+                                                                <Text style={styles.Bar_HeaderText}>{"Total Pay for job - £ "}<Text style={styles.Bar_HeaderText}>{this.state.S2_Qty_Amount.toFixed(2)}</Text><Text style={styles.Bar_HeaderText}>{" (Units - " + this.state.S2_Qty_Results_Units + ")"}</Text></Text>
                                                             </View>
                                                             <View style={styles.Container_EP_2} />
                                                             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -2069,7 +2069,7 @@ class Add_Timesheet extends Component {
                                                                                 </View>
 
                                                                                 <View style={{ flex: 1, justifyContent: 'center', backgroundColor: LG_BG_THEME.APPTHEME_1 }}>
-                                                                                    <Text style={styles.S2_Qty_WMedium}>{"Â£ " + ((this.state.S2_Qty_Amount * item) / 100).toFixed(2)}</Text>
+                                                                                    <Text style={styles.S2_Qty_WMedium}>{"£ " + ((this.state.S2_Qty_Amount * item) / 100).toFixed(2)}</Text>
                                                                                 </View>
                                                                             </View>
                                                                         </View>
@@ -2317,7 +2317,7 @@ class Add_Timesheet extends Component {
                                                                                     <View style={styles.Container_EP_2} />
 
                                                                                     <View style={{ height: height / 100 * 8, justifyContent: "center", backgroundColor: LG_BG_THEME.APPTHEME_2 }}>
-                                                                                        <Text style={styles.Bar_HeaderText}>{"Total Pay for job - Â£ "}<Text style={styles.Bar_HeaderText}>{this.state.S2_Qty_Amount.toFixed(2)}</Text><Text style={styles.Bar_HeaderText}>{" (Units -" + this.state.S2_QtyArraylist_Preview.length + ")"}</Text></Text>
+                                                                                        <Text style={styles.Bar_HeaderText}>{"Total Pay for job - £ "}<Text style={styles.Bar_HeaderText}>{this.state.S2_Qty_Amount.toFixed(2)}</Text><Text style={styles.Bar_HeaderText}>{" (Units -" + this.state.S2_QtyArraylist_Preview.length + ")"}</Text></Text>
                                                                                     </View>
 
                                                                                     <View style={styles.Container_EP_3} />
@@ -2352,11 +2352,11 @@ class Add_Timesheet extends Component {
                                                                                             <View style={{ flex: 0.35, justifyContent: 'center', backgroundColor: LG_BG_THEME.APPTHEME_1 }}>
                                                                                                 <View style={{ flex: 0.05, justifyContent: 'center' }} />
                                                                                                 <View style={{ flex: 0.45, justifyContent: 'center' }}>
-                                                                                                    <Text numberOfLines={2} style={styles.S2_Qty_WMedium}>{isNaN((item.engineer_pay_price * item.Is_QtyCount).toFixed(2)) == true ? "Â£ 0.0" : "Â£ " + (item.engineer_pay_price * item.Is_QtyCount).toFixed(2)}</Text>
+                                                                                                    <Text numberOfLines={2} style={styles.S2_Qty_WMedium}>{isNaN((item.engineer_pay_price * item.Is_QtyCount).toFixed(2)) == true ? "£ 0.0" : "£ " + (item.engineer_pay_price * item.Is_QtyCount).toFixed(2)}</Text>
                                                                                                 </View>
 
                                                                                                 <View style={{ flex: 0.45, justifyContent: 'center' }}>
-                                                                                                    <Text numberOfLines={2} style={styles.S2_Qty_WSmall}>{"Â£ " + item.engineer_pay_price + " (PP)"}</Text>
+                                                                                                    <Text numberOfLines={2} style={styles.S2_Qty_WSmall}>{"£ " + item.engineer_pay_price + " (PP)"}</Text>
                                                                                                 </View>
 
                                                                                                 <View style={{ flex: 0.05, justifyContent: 'center' }} />
@@ -2414,13 +2414,13 @@ class Add_Timesheet extends Component {
 
                                                                                                     <View style={{ height: height / 100 * 6, justifyContent: "center", flexDirection: 'row', opacity: 0.8 }}>
                                                                                                         <View style={{ flex: 0.3, justifyContent: 'center', }}>
-                                                                                                            <Text style={styles.S2_container_BlackText}>{"Section No"}</Text>
+                                                                                                            <Text style={styles.S2_container_BlackText}>{"Section No / Chamber ID"}</Text>
                                                                                                         </View>
                                                                                                         <View style={{ flex: 0.2, justifyContent: 'center', }}>
-                                                                                                            <Text style={styles.S2_container_BlackText}>{"Dist"}</Text>
+                                                                                                            <Text style={styles.S2_container_BlackText}>{"Distance (m)"}</Text>
                                                                                                         </View>
                                                                                                         <View style={{ flex: 0.4, justifyContent: 'center', }}>
-                                                                                                            <Text style={styles.S2_container_BlackText}>{"Blockage"}</Text>
+                                                                                                            <Text style={styles.S2_container_BlackText}>{"Blockage / Per A55"}</Text>
                                                                                                         </View>
                                                                                                         <View style={{ flex: 0.1, justifyContent: 'center', }} />
                                                                                                     </View>
@@ -2477,7 +2477,7 @@ class Add_Timesheet extends Component {
                                                                                         <View style={styles.Container_EP_2} />
 
                                                                                         <View style={{ height: height / 100 * 8, justifyContent: "center", backgroundColor: LG_BG_THEME.APPTHEME_2 }}>
-                                                                                            <Text style={styles.Bar_HeaderText}>{"Total Pay for job - Â£ "}<Text style={styles.Bar_HeaderText}>{this.state.S2_Qty_Amount.toFixed(2)}</Text><Text style={styles.Bar_HeaderText}>{" (Units -" + this.state.S2_QtyArraylist_Preview.length + ")"}</Text></Text>
+                                                                                            <Text style={styles.Bar_HeaderText}>{"Total Pay for job - £ "}<Text style={styles.Bar_HeaderText}>{this.state.S2_Qty_Amount.toFixed(2)}</Text><Text style={styles.Bar_HeaderText}>{" (Units -" + this.state.S2_QtyArraylist_Preview.length + ")"}</Text></Text>
                                                                                         </View>
                                                                                         <View style={styles.Container_EP_2} />
 
@@ -2495,7 +2495,7 @@ class Add_Timesheet extends Component {
                                                                                                     </View>
 
                                                                                                     <View style={{ flex: 1, justifyContent: 'center', backgroundColor: LG_BG_THEME.APPTHEME_1 }}>
-                                                                                                        <Text style={styles.S2_Qty_WMedium}>{"Â£ " + ((this.state.S2_Qty_Amount * item) / 100).toFixed(2)}</Text>
+                                                                                                        <Text style={styles.S2_Qty_WMedium}>{"£ " + ((this.state.S2_Qty_Amount * item) / 100).toFixed(2)}</Text>
                                                                                                     </View>
                                                                                                 </View>
                                                                                             </View>
@@ -2875,22 +2875,22 @@ class Add_Timesheet extends Component {
                                                             <View style={{ flex: 1, justifyContent: "center", opacity: 0.6, marginLeft: width / 100 * 2 }}>
 
                                                                 <View style={{ height: width / 100 * 8, justifyContent: 'center' }}>
-                                                                    <Text numberOfLines={2} style={styles.Modal_TextStyle}>{"Section No : " + this.state.Modal_SectionNo}</Text>
+                                                                    <Text numberOfLines={2} style={styles.Modal_TextStyle}>{"Section No / Chamber ID : " + this.state.Modal_SectionNo}</Text>
                                                                 </View>
                                                                 <View style={{ height: width / 100 * 8, justifyContent: 'center' }}>
-                                                                    <Text numberOfLines={2} style={styles.Modal_TextStyle}>{"Distance : " + this.state.Modal_Distance}</Text>
+                                                                    <Text numberOfLines={2} style={styles.Modal_TextStyle}>{"Distance (m) : " + this.state.Modal_Distance}</Text>
                                                                 </View>
                                                                 <View style={{ height: width / 100 * 8, justifyContent: 'center' }}>
-                                                                    <Text numberOfLines={2} style={styles.Modal_TextStyle}>{"Blockage : " + this.state.Modal_Blockage}</Text>
+                                                                    <Text numberOfLines={2} style={styles.Modal_TextStyle}>{"Blockage / Per A55: " + this.state.Modal_Blockage}</Text>
                                                                 </View>
                                                                 <View style={{ height: width / 100 * 8, justifyContent: 'center' }}>
-                                                                    <Text numberOfLines={2} style={styles.Modal_TextStyle}>{"Desiit : " + this.state.Modal_Desiit}</Text>
+                                                                    <Text numberOfLines={2} style={styles.Modal_TextStyle}>{"CBTs : " + this.state.Modal_Desiit}</Text>
                                                                 </View>
                                                                 <View style={{ height: width / 100 * 8, justifyContent: 'center' }}>
-                                                                    <Text numberOfLines={2} style={styles.Modal_TextStyle}>{"New Track : " + this.state.Modal_Newtrack}</Text>
+                                                                    <Text numberOfLines={2} style={styles.Modal_TextStyle}>{"Bars : " + this.state.Modal_Newtrack}</Text>
                                                                 </View>
                                                                 <View style={{ height: width / 100 * 8, justifyContent: 'center' }}>
-                                                                    <Text numberOfLines={2} style={styles.Modal_TextStyle}>{"Slip No : " + this.state.Modal_SlipNo}</Text>
+                                                                    <Text numberOfLines={2} style={styles.Modal_TextStyle}>{"Mobras: " + this.state.Modal_SlipNo}</Text>
                                                                 </View>
                                                                 <View style={{ height: width / 100 * 8, justifyContent: 'center' }}>
                                                                     <Text numberOfLines={2} style={styles.Modal_TextStyle}>{"Slip Comments : " + this.state.Modal_SlipComments}</Text>
@@ -3022,7 +3022,7 @@ class Add_Timesheet extends Component {
                                         <View style={styles.container_TextInputOverview}>
                                             <View style={{ flex: 1, justifyContent: "center", }}>
                                                 <TextInput
-                                                    placeholder='Section No'
+                                                    placeholder='Section No / Chamber ID'
                                                     ref='Section_No'
                                                     returnKeyType='next'
                                                    // keyboardType={"numeric"}
@@ -3041,7 +3041,7 @@ class Add_Timesheet extends Component {
                                         <View style={styles.container_TextInputOverview}>
                                             <View style={{ flex: 1, justifyContent: "center", }}>
                                                 <TextInput
-                                                    placeholder='Distance'
+                                                    placeholder='Distance (m)'
                                                     ref='Distance'
                                                     returnKeyType='next'
                                                    // keyboardType={"numeric"}
@@ -3060,7 +3060,7 @@ class Add_Timesheet extends Component {
                                         <View style={styles.container_TextInputOverview}>
                                             <View style={{ flex: 1, justifyContent: "center", }}>
                                                 <TextInput
-                                                    placeholder='Blockage'
+                                                    placeholder='Blockage / Per A55'
                                                     ref='Blockage'
                                                     returnKeyType='next'
                                                     //keyboardType={"numeric"}
@@ -3080,7 +3080,7 @@ class Add_Timesheet extends Component {
                                         <View style={styles.container_TextInputOverview}>
                                             <View style={{ flex: 1, justifyContent: "center", }}>
                                                 <TextInput
-                                                    placeholder='Desilt'
+                                                    placeholder='CBTs'
                                                     ref='Desilt'
                                                     returnKeyType='next'
                                                    // keyboardType={"numeric"}
@@ -3101,7 +3101,7 @@ class Add_Timesheet extends Component {
                                         <View style={styles.container_TextInputOverview}>
                                             <View style={{ flex: 1, justifyContent: "center", }}>
                                                 <TextInput
-                                                    placeholder='New Track'
+                                                    placeholder='Bars'
                                                     ref='New_Track'
                                                     returnKeyType='next'
                                                   //  keyboardType={"numeric"}
@@ -3122,7 +3122,7 @@ class Add_Timesheet extends Component {
                                         <View style={styles.container_TextInputOverview}>
                                             <View style={{ flex: 1, justifyContent: "center", }}>
                                                 <TextInput
-                                                    placeholder='DFE Slip Number'
+                                                    placeholder='Mobras'
                                                     ref='DFESlipNumber'
                                                     returnKeyType='next'
                                                     //keyboardType={"numeric"}
