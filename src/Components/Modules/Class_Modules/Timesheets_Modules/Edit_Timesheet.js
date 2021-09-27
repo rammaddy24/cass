@@ -1261,7 +1261,8 @@ class Edit_Timesheet extends Component {
                 } else {
                     this.setState({
                         S3_Section_No: "", S3_Distance: "", S3_Blockage: "",
-                        S3_Desilt: "", S3_New_Track: "", S3_DFESlipNumber: "", S3_Comments: "", S3_Infostatus: false
+                        S3_Desilt: "", S3_New_Track: "", S3_DFESlipNumber: "", S3_Comments: "",
+                        S3_Infostatus: false
                     })
                 }
 

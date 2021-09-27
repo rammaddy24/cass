@@ -733,10 +733,10 @@ class AddMore_Timesheet extends Component {
                         Add_TimesheetScreenIndex: 1
                     })
                 } else {
-                    var C2_QtyArraylist = 0
+                    let C2_QtyArraylist = 0
                     for (let i = 0; i < this.state.S2_Quatitylist_Response.length; i++) {
                         if (this.state.S2_Quatitylist_Response[i].Is_QtyCount != 0 && this.state.S2_Quatitylist_Response[i].additional_info == "1") {
-                            C2_QtyArraylist = +1
+                            C2_QtyArraylist++
                         }
                     }
                     if (this.state.S2_Qty_Count == 0) {
@@ -837,7 +837,7 @@ class AddMore_Timesheet extends Component {
                     })
                 } 
                 else {
-                    if (Image_Sign == "") {
+                    if (Image_Sign == "" && this.state.Signature_Image=='') {
                         Snackbar.show({
                             title: 'Upload E-Signature..!',
                             duration: Snackbar.LENGTH_SHORT,
@@ -1055,7 +1055,13 @@ class AddMore_Timesheet extends Component {
                     duration: Snackbar.LENGTH_SHORT,
                 });
             } else {
-
+                let C2_QtyArraylist = 0
+                for (let i = 0; i < this.state.S2_Quatitylist_Response.length; i++) {
+                    if (this.state.S2_Quatitylist_Response[i].Is_QtyCount != 0 && this.state.S2_Quatitylist_Response[i].additional_info == "1") {
+                        C2_QtyArraylist++;
+                    }
+                }
+                if( this.state.S3_InfoArray.length<C2_QtyArraylist) {
                 this.state.S3_InfoArray.push({
                     "section_no": this.state.S3_Section_No,
                     "distance": this.state.S3_Distance,
@@ -1066,7 +1072,7 @@ class AddMore_Timesheet extends Component {
                     "slip_comments": this.state.S3_Comments,
                     "Is_Status": Route_Data,
                 })
-
+               }
                 if (RouteName == "More") {
                     this.setState({
                         S3_Section_No: "", S3_Distance: "", S3_Blockage: "",
@@ -1075,7 +1081,9 @@ class AddMore_Timesheet extends Component {
                 } else {
                     this.setState({
                         S3_Section_No: "", S3_Distance: "", S3_Blockage: "",
-                        S3_Desilt: "", S3_New_Track: "", S3_DFESlipNumber: "", S3_Comments: "", S3_Infostatus: false
+                        S3_Desilt: "", S3_New_Track: "", S3_DFESlipNumber: "", S3_Comments: "",
+                         S3_Infostatus: false,
+                         AddionalInfo_Modal: false,
                     })
                 }
 
