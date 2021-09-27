@@ -1999,8 +1999,8 @@ class AddMore_Timesheet extends Component {
                                                         </View>
                                                         : this.state.Add_TimesheetScreen == "Step 5" ?
 
-                                                            <View style={{ flex: 1, justifyContent: "center" }}>
-
+                                                            <View style={{ flex: 1}}>
+                                                                <ScrollView  contentContainerStyle= {{justifyContent: "center" }}>
 
 
                                                                 <View style={styles.Container_EP_2} />
@@ -2012,7 +2012,7 @@ class AddMore_Timesheet extends Component {
                                                                 <View style={styles.Container_EP_1} />
                                                                 {!this.state.Signature_Image? 
                                                                 <SignatureCapture
-                                                                    style={{ flex: 1, borderColor: '#000033', borderWidth: 1 }}
+                                                                    style={{ flex: 1,height:350, borderColor: '#000033', borderWidth: 1 }}
                                                                     ref="sign"
                                                                     //rotateClockwise={true}
                                                                     onSaveEvent={this._onSaveEvent}
@@ -2059,7 +2059,7 @@ class AddMore_Timesheet extends Component {
                                                                 </View>
 
                                                                 <View style={styles.Container_EP_2} />
-
+                                                                </ScrollView>
                                                             </View>
 
                                                             : this.state.Add_TimesheetScreen == "Step 6" ?
