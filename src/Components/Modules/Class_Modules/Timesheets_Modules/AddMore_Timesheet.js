@@ -52,6 +52,8 @@ class AddMore_Timesheet extends Component {
             S2_Qty_Amount: 0,
 
             S3_InfoArray: [],
+            S3_InfoArrayTemp:[],
+            activeIndex:0,
             S3_Section_No: "",
             S3_Distance: "",
             S3_Blockage: "",
@@ -947,7 +949,8 @@ class AddMore_Timesheet extends Component {
                                 "submitter_name": this.state.SubmitterName,
                                 "work_item_id_qty": C2_QtyArraylist,
                                 "comments": this.state.S3_TextComments,
-                                "item_details": this.state.S3_InfoArray,
+                               // "item_details": this.state.S3_InfoArray,
+                               "item_details": [...this.state.S3_InfoArray,...this.state.S3_InfoArrayTemp],
                                 "user_percentage": this.state.S4_CostPercentage,
                                 "user_cost": this.state.S4_UserAmount,
                                 "signature": this.state.Signature_Image,
@@ -1034,22 +1037,37 @@ class AddMore_Timesheet extends Component {
     }
 
     S2_InfoMethod(Route_Data, S2_Quatitylist_Response) {
+        var addInfoData= S2_Quatitylist_Response.filter((data)=>{
+            return data.additional_info=='1';
+        });
+ 
+ 
+        const activeIndex= addInfoData.findIndex((item)=>{
+            return item["id"]===Route_Data.id;
+        });
 
         this.setState({
-            AddionalInfo_Modal: true
+            AddionalInfo_Modal: true,
+            activeIndex
         })
 
         console.log(Route_Data, S2_Quatitylist_Response)
     }
 
     TS3_Method(RouteName, Route_Data) {
-
+        let C2_QtyArraylist = 0
+        for (let i = 0; i < this.state.S2_Quatitylist_Response.length; i++) {
+            if (this.state.S2_Quatitylist_Response[i].Is_QtyCount != 0 && this.state.S2_Quatitylist_Response[i].additional_info == "1") {
+                C2_QtyArraylist++;
+                
+            }
+        }
         if (RouteName == "Open") {
             this.setState({
                 S3_Infostatus: true
             })
         } else {
-            if (this.state.S3_Section_No == "" && this.state.S3_Distance == "" && this.state.S3_Blockage == "" && this.state.S3_Desilt == "" && this.state.S3_New_Track == "" && this.state.S3_DFESlipNumber == "" && this.state.S3_Comments == "") {
+            if ((this.state.S3_InfoArray.length!==C2_QtyArraylist) && this.state.S3_Section_No == "" && this.state.S3_Distance == "" && this.state.S3_Blockage == "" && this.state.S3_Desilt == "" && this.state.S3_New_Track == "" && this.state.S3_DFESlipNumber == "" && this.state.S3_Comments == "") {
                 Snackbar.show({
                     title: 'Enter any one of the info..!',
                     duration: Snackbar.LENGTH_SHORT,
@@ -1061,18 +1079,55 @@ class AddMore_Timesheet extends Component {
                         C2_QtyArraylist++;
                     }
                 }
-                if( this.state.S3_InfoArray.length<C2_QtyArraylist) {
-                this.state.S3_InfoArray.push({
-                    "section_no": this.state.S3_Section_No,
-                    "distance": this.state.S3_Distance,
-                    "blockage": this.state.S3_Blockage,
-                    "desiit": this.state.S3_Desilt,
-                    "new_track": this.state.S3_New_Track,
-                    "slip_no": this.state.S3_DFESlipNumber,
-                    "slip_comments": this.state.S3_Comments,
-                    "Is_Status": Route_Data,
-                })
-               }
+                const S3_Info_activeIndex = this.state.activeIndex;
+                const InfoArrExist = this.state.S3_InfoArray[S3_Info_activeIndex];
+                
+                if(!InfoArrExist || Route_Data!==true){
+                    if( Route_Data===true){
+                        this.state.S3_InfoArray.push({
+                            "section_no": this.state.S3_Section_No,
+                            "distance": this.state.S3_Distance,
+                            "blockage": this.state.S3_Blockage,
+                            "desiit": this.state.S3_Desilt,
+                            "new_track": this.state.S3_New_Track,
+                            "slip_no": this.state.S3_DFESlipNumber,
+                            "slip_comments": this.state.S3_Comments,
+                            "Is_Status": Route_Data,
+                         });
+                    } else {
+                        this.state.S3_InfoArrayTemp.push({
+                            "section_no": this.state.S3_Section_No,
+                            "distance": this.state.S3_Distance,
+                            "blockage": this.state.S3_Blockage,
+                            "desiit": this.state.S3_Desilt,
+                            "new_track": this.state.S3_New_Track,
+                            "slip_no": this.state.S3_DFESlipNumber,
+                            "slip_comments": this.state.S3_Comments,
+                            "Is_Status": Route_Data,
+                         });
+                    }
+                }
+                else {
+
+                    let S3_InfoArray = [...this.state.S3_InfoArray];
+                    // 2. Make a shallow copy of the item you want to mutate
+                    let item = {...S3_InfoArray[S3_Info_activeIndex]};
+                    // 3. Replace the property you're intested in
+
+                    item.section_no= this.state.S3_Section_No?this.state.S3_Section_No: S3_InfoArray[S3_Info_activeIndex].section_no ,
+                    item.distance= this.state.S3_Distance?this.state.S3_Distance:S3_InfoArray[S3_Info_activeIndex].distance,
+                    item.blockage= this.state.S3_Blockage?this.state.S3_Blockage:S3_InfoArray[S3_Info_activeIndex].blockage,
+                    item.desiit= this.state.S3_Desilt?this.state.S3_Desilt:S3_InfoArray[S3_Info_activeIndex].desiit,
+                    item.new_track= this.state.S3_New_Track?this.state.S3_New_Track:S3_InfoArray[S3_Info_activeIndex].new_track,
+                    item.slip_no= this.state.S3_DFESlipNumber?this.state.S3_DFESlipNumber:S3_InfoArray[S3_Info_activeIndex].slip_no,
+                    item.slip_comments= this.state.S3_Comments?this.state.S3_Comments:S3_InfoArray[S3_Info_activeIndex].slip_comments,
+                    item.Is_Status= Route_Data,
+
+                    // 4. Put it back into our array. N.B. we *are* mutating the array here, but that's why we made a copy first
+                    S3_InfoArray[S3_Info_activeIndex] = item;
+                    // 5. Set the state to our new copy
+                    this.setState({S3_InfoArray});
+                }
                 if (RouteName == "More") {
                     this.setState({
                         S3_Section_No: "", S3_Distance: "", S3_Blockage: "",
@@ -1084,6 +1139,7 @@ class AddMore_Timesheet extends Component {
                         S3_Desilt: "", S3_New_Track: "", S3_DFESlipNumber: "", S3_Comments: "",
                          S3_Infostatus: false,
                          AddionalInfo_Modal: false,
+                         activeIndex:''
                     })
                 }
 
@@ -1100,15 +1156,14 @@ class AddMore_Timesheet extends Component {
                 duration: Snackbar.LENGTH_SHORT,
             });
         } else {
-            var Id = []
-            for (hv = 0; hv < this.state.S3_InfoArray.length; hv++) {
-                Id.push(this.state.S3_InfoArray[hv].section_no)
+            for (hv = 0; hv < this.state.S3_InfoArrayTemp.length; hv++) {
+                Id.push(this.state.S3_InfoArrayTemp[hv].section_no)
             }
 
-            var S3_InfoArrayList = this.state.S3_InfoArray.splice(Id.indexOf(RouteName.section_no), 1);
+            var S3_InfoArrayList = this.state.S3_InfoArrayTemp.splice(Id.indexOf(RouteName.section_no), 1);
 
-            this.setState({ S3_InfoArray: S3_InfoArrayList })
-            this.setState({ S3_InfoArray: Array.from(new Set(this.state.S3_InfoArray)) })
+            this.setState({ S3_InfoArrayTemp: S3_InfoArrayList })
+            this.setState({ S3_InfoArrayTemp: Array.from(new Set(this.state.S3_InfoArrayTemp)) })
         }
         this.forceUpdate()
     }
@@ -1864,7 +1919,8 @@ class AddMore_Timesheet extends Component {
 
                                                                                 <View style={{ height: height / 100 * 8, justifyContent: "center", backgroundColor: LG_BG_THEME.APPTHEME_2 }}>
 
-                                                                                    <Text style={styles.Bar_HeaderText}>{"Total Selections Added - " + this.state.S3_InfoArray.length}</Text>
+                                                                                   
+                                                                                    <Text style={styles.Bar_HeaderText}>{"Total Selections Added - " + (this.state.S3_InfoArray.length + this.state.S3_InfoArrayTemp.length)}</Text>
                                                                                 </View>
 
                                                                                 <View style={styles.Container_EP_1} />
@@ -1898,10 +1954,35 @@ class AddMore_Timesheet extends Component {
                                                                                         <View style={{ flex: 0.4, justifyContent: 'center', backgroundColor: LG_BG_THEME.WHITE_THEME, opacity: 0.8 }}>
                                                                                             <Text style={styles.S2_container_BlackText}>{item.blockage}</Text>
                                                                                         </View>
+                                                                                        {item.Is_Status !==true &&
                                                                                         <TouchableOpacity onPress={() => this.S3_ToggleMethod(item, index)} style={{ flex: 0.1, justifyContent: 'center', alignItems: 'center' }}>
                                                                                             <Image source={require('../../../../Asset/Icons/Delete_Icon.png')} style={{ width: width / 100 * 5, height: width / 100 * 5, tintColor: LG_BG_THEME.APPTHEME_BLACK, }} />
                                                                                         </TouchableOpacity>
+                                                                                        }
                                                                                     </View>
+                                                                                ))}
+
+
+                                                                                {this.state.S3_InfoArrayTemp.map((item, index) => (
+
+                                                                                <View style={{ height: height / 100 * 7, justifyContent: "center", flexDirection: 'row', marginBottom: width / 100 * 3, elevation: Platform.OS == "android" ? width / 100 * 1 : width / 100 * 0.1, shadowOffset: { width: 2, height: 2 }, shadowOpacity: 0.2, shadowColor: LG_BG_THEME.APPTHEME_2, }}>
+                                                                                    <TouchableOpacity onPress={() => this.Container_Model("Info Items", true, item)} style={{ flex: 0.3, justifyContent: 'center', backgroundColor: LG_BG_THEME.WHITE_THEME, opacity: 0.8 }}>
+                                                                                        <Text style={styles.S2_container_BlackText}>{item.section_no}</Text>
+                                                                                        <Image source={require('../../../../Asset/Icons/search.png')} style={{ width: width / 100 * 4, height: width / 100 * 4, tintColor: LG_BG_THEME.APPTHEME_1, position: "absolute", marginLeft: width / 100 * 1 }} />
+
+                                                                                    </TouchableOpacity>
+                                                                                    <View style={{ flex: 0.2, justifyContent: 'center', backgroundColor: LG_BG_THEME.APPTHEME_GREY_2, }}>
+                                                                                        <Text style={styles.S2_container_BlackText}>{item.distance}</Text>
+                                                                                    </View>
+                                                                                    <View style={{ flex: 0.4, justifyContent: 'center', backgroundColor: LG_BG_THEME.WHITE_THEME, opacity: 0.8 }}>
+                                                                                        <Text style={styles.S2_container_BlackText}>{item.blockage}</Text>
+                                                                                    </View>
+                                                                                    {item.Is_Status !==true &&
+                                                                                    <TouchableOpacity onPress={() => this.S3_ToggleMethod(item, index)} style={{ flex: 0.1, justifyContent: 'center', alignItems: 'center' }}>
+                                                                                        <Image source={require('../../../../Asset/Icons/Delete_Icon.png')} style={{ width: width / 100 * 5, height: width / 100 * 5, tintColor: LG_BG_THEME.APPTHEME_BLACK, }} />
+                                                                                    </TouchableOpacity>
+                                                                                    }
+                                                                                </View>
                                                                                 ))}
 
                                                                                 <View style={styles.Container_EP_2} />
@@ -2306,7 +2387,7 @@ class AddMore_Timesheet extends Component {
 
                                                                                                     <View style={{ height: height / 100 * 8, justifyContent: "center", backgroundColor: LG_BG_THEME.APPTHEME_2 }}>
 
-                                                                                                        <Text style={styles.Bar_HeaderText}>{"Total Selections Added - " + this.state.S3_InfoArray.length}</Text>
+                                                                                                    <Text style={styles.Bar_HeaderText}>{"Total Selections Added - " + (this.state.S3_InfoArray.length +this.state.S3_InfoArrayTemp.length )}</Text>
                                                                                                     </View>
 
                                                                                                     <View style={styles.Container_EP_1} />
@@ -2328,7 +2409,7 @@ class AddMore_Timesheet extends Component {
 
                                                                                                     {this.state.S3_InfoArray.map((item, index) => (
 
-                                                                                                        <View style={{ height: height / 100 * 7, justifyContent: "center", flexDirection: 'row', marginBottom: width / 100 * 3, elevation: Platform.OS == "android" ? width / 100 * 1 : width / 100 * 0.1, shadowOffset: { width: 2, height: 2 }, shadowOpacity: 0.2, shadowColor: LG_BG_THEME.APPTHEME_2 }}>
+                                                                                                        <View style={{ height: height / 100 * 7, justifyContent: "flex-start", flexDirection: 'row', marginBottom: width / 100 * 3, elevation: Platform.OS == "android" ? width / 100 * 1 : width / 100 * 0.1, shadowOffset: { width: 2, height: 2 }, shadowOpacity: 0.2, shadowColor: LG_BG_THEME.APPTHEME_2 }}>
                                                                                                             <TouchableOpacity onPress={() => this.Container_Model("Info Items", true, item)} style={{ flex: 0.35, justifyContent: 'center', backgroundColor: LG_BG_THEME.WHITE_THEME, opacity: 0.8 }}>
                                                                                                                 <Text style={styles.S2_container_BlackText}>{item.section_no}</Text>
 
@@ -2344,6 +2425,26 @@ class AddMore_Timesheet extends Component {
 
 
                                                                                                         </View>
+                                                                                                    ))}
+
+                                                                                                    {this.state.S3_InfoArrayTemp.map((item, index) => (
+
+                                                                                                    <View style={{ height: height / 100 * 7, justifyContent: "flex-start", flexDirection: 'row', marginBottom: width / 100 * 3, elevation: Platform.OS == "android" ? width / 100 * 1 : width / 100 * 0.1, shadowOffset: { width: 2, height: 2 }, shadowOpacity: 0.2, shadowColor: LG_BG_THEME.APPTHEME_2 }}>
+                                                                                                        <TouchableOpacity onPress={() => this.Container_Model("Info Items", true, item)} style={{ flex: 0.35, justifyContent: 'center', backgroundColor: LG_BG_THEME.WHITE_THEME, opacity: 0.8 }}>
+                                                                                                            <Text style={styles.S2_container_BlackText}>{item.section_no}</Text>
+
+                                                                                                            <Image source={require('../../../../Asset/Icons/search.png')} style={{ width: width / 100 * 4, height: width / 100 * 4, tintColor: LG_BG_THEME.APPTHEME_1, position: "absolute", marginLeft: width / 100 * 1 }} />
+
+                                                                                                        </TouchableOpacity>
+                                                                                                        <View style={{ flex: 0.25, justifyContent: 'center', backgroundColor: LG_BG_THEME.APPTHEME_GREY_2, }}>
+                                                                                                            <Text style={styles.S2_container_BlackText}>{item.distance}</Text>
+                                                                                                        </View>
+                                                                                                        <View style={{ flex: 0.4, justifyContent: 'center', backgroundColor: LG_BG_THEME.WHITE_THEME, opacity: 0.8 }}>
+                                                                                                            <Text style={styles.S2_container_BlackText}>{item.blockage}</Text>
+                                                                                                        </View>
+
+
+                                                                                                    </View>
                                                                                                     ))}
 
                                                                                                     <View style={styles.Container_EP_2} />
@@ -2877,7 +2978,10 @@ class AddMore_Timesheet extends Component {
                                                     style={styles.container_Text}
                                                     onChangeText={(S3_Section_No) => this.setState({ S3_Section_No })}
                                                     onSubmitEditing={() => this.refs.Distance.focus()}
-                                                    value={this.state.S3_Section_No}
+                                                    value={
+                                                        this.state.S3_Section_No? this.state.S3_Section_No:
+                                                       (this.state.S3_InfoArray.length>0&&
+                                                        this.state.S3_InfoArray[this.state.activeIndex]?this.state.S3_InfoArray[this.state.activeIndex].section_no:'')}
                                                 />
                                             </View>
                                         </View>
@@ -2896,7 +3000,10 @@ class AddMore_Timesheet extends Component {
                                                     style={styles.container_Text}
                                                     onChangeText={(S3_Distance) => this.setState({ S3_Distance })}
                                                     onSubmitEditing={() => this.refs.Blockage.focus()}
-                                                    value={this.state.S3_Distance}
+                                                    value={
+                                                        this.state.S3_Distance? this.state.S3_Distance:
+                                                        (this.state.S3_InfoArray.length>0&&
+                                                        this.state.S3_InfoArray[this.state.activeIndex]?this.state.S3_InfoArray[this.state.activeIndex].distance:'')}
                                                 />
                                             </View>
                                         </View>
@@ -2915,7 +3022,10 @@ class AddMore_Timesheet extends Component {
                                                     style={styles.container_Text}
                                                     onChangeText={(S3_Blockage) => this.setState({ S3_Blockage })}
                                                     onSubmitEditing={() => this.refs.Desilt.focus()}
-                                                    value={this.state.S3_Blockage}
+                                                    value={
+                                                        this.state.S3_Blockage? this.state.S3_Blockage:
+                                                        (this.state.S3_InfoArray.length>0&&
+                                                        this.state.S3_InfoArray[this.state.activeIndex]?this.state.S3_InfoArray[this.state.activeIndex].blockage:'')}
                                                 />
                                             </View>
                                         </View>
@@ -2935,7 +3045,10 @@ class AddMore_Timesheet extends Component {
                                                     style={styles.container_Text}
                                                     onChangeText={(S3_Desilt) => this.setState({ S3_Desilt })}
                                                     onSubmitEditing={() => this.refs.New_Track.focus()}
-                                                    value={this.state.S3_Desilt}
+                                                    value={
+                                                        this.state.S3_Desilt? this.state.S3_Desilt:
+                                                        (this.state.S3_InfoArray.length>0&&
+                                                        this.state.S3_InfoArray[this.state.activeIndex]?this.state.S3_InfoArray[this.state.activeIndex].desiit:'')}
 
                                                 />
                                             </View>
@@ -2956,7 +3069,10 @@ class AddMore_Timesheet extends Component {
                                                     style={styles.container_Text}
                                                     onChangeText={(S3_New_Track) => this.setState({ S3_New_Track })}
                                                     onSubmitEditing={() => this.refs.DFESlipNumber.focus()}
-                                                    value={this.state.S3_New_Track}
+                                                    value={
+                                                        this.state.S3_New_Track? this.state.S3_New_Track:
+                                                        (this.state.S3_InfoArray.length>0&&
+                                                        this.state.S3_InfoArray[this.state.activeIndex]?this.state.S3_InfoArray[this.state.activeIndex].new_track:'')}
 
                                                 />
                                             </View>
@@ -2977,7 +3093,10 @@ class AddMore_Timesheet extends Component {
                                                     style={styles.container_Text}
                                                     onChangeText={(S3_DFESlipNumber) => this.setState({ S3_DFESlipNumber })}
                                                     onSubmitEditing={() => this.refs.Comments.focus()}
-                                                    value={this.state.S3_DFESlipNumber}
+                                                    value={
+                                                        this.state.S3_DFESlipNumber? this.state.S3_DFESlipNumber:
+                                                        (this.state.S3_InfoArray.length>0&&
+                                                        this.state.S3_InfoArray[this.state.activeIndex]?this.state.S3_InfoArray[this.state.activeIndex].slip_no:'')}
 
                                                 />
                                             </View>
@@ -2998,7 +3117,10 @@ class AddMore_Timesheet extends Component {
                                                         placeholderTextColor={LG_BG_THEME.APPTHEME_GREY_2}
                                                         style={styles.container_Text}
                                                         onChangeText={(S3_Comments) => this.setState({ S3_Comments })}
-                                                        value={this.state.S3_Comments}
+                                                        value={
+                                                            this.state.S3_Comments? this.state.S3_Comments:
+                                                            (this.state.S3_InfoArray.length>0&&
+                                                            this.state.S3_InfoArray[this.state.activeIndex]?this.state.S3_InfoArray[this.state.activeIndex].slip_comments:'')}
                                                     //onSubmitEditing={() => this.refs.Exchange.focus()}
                                                     />
                                                 </View>
