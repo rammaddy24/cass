@@ -1843,7 +1843,7 @@ class Add_Timesheet extends Component {
                                                                                         placeholder='Distance (m)'
                                                                                         ref='Distance'
                                                                                         returnKeyType='next'
-                                                                                        keyboardType={"numeric"}
+                                                                                       // keyboardType={"numeric"}
                                                                                         selectionColor={LG_BG_THEME.APPTHEME_BLACK}
                                                                                         underlineColorAndroid='transparent'
                                                                                         placeholderTextColor={LG_BG_THEME.APPTHEME_GREY_2}
@@ -1862,7 +1862,7 @@ class Add_Timesheet extends Component {
                                                                                         placeholder='Blockage / Per A55'
                                                                                         ref='Blockage'
                                                                                         returnKeyType='next'
-                                                                                        keyboardType={"numeric"}
+                                                                                        //keyboardType={"numeric"}
                                                                                         selectionColor={LG_BG_THEME.APPTHEME_BLACK}
                                                                                         underlineColorAndroid='transparent'
                                                                                         placeholderTextColor={LG_BG_THEME.APPTHEME_GREY_2}
@@ -1882,7 +1882,7 @@ class Add_Timesheet extends Component {
                                                                                         placeholder='CBTs'
                                                                                         ref='Desilt'
                                                                                         returnKeyType='next'
-                                                                                        keyboardType={"numeric"}
+                                                                                       // keyboardType={"numeric"}
                                                                                         selectionColor={LG_BG_THEME.APPTHEME_BLACK}
                                                                                         underlineColorAndroid='transparent'
                                                                                         placeholderTextColor={LG_BG_THEME.APPTHEME_GREY_2}
@@ -1903,7 +1903,7 @@ class Add_Timesheet extends Component {
                                                                                         placeholder='Bars'
                                                                                         ref='New_Track'
                                                                                         returnKeyType='next'
-                                                                                        keyboardType={"numeric"}
+                                                                                      //  keyboardType={"numeric"}
                                                                                         underlineColorAndroid='transparent'
                                                                                         selectionColor={LG_BG_THEME.APPTHEME_BLACK}
                                                                                         placeholderTextColor={LG_BG_THEME.APPTHEME_GREY_2}
