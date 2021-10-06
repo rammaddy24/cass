@@ -618,31 +618,7 @@ class Add_Timesheet extends Component {
 
     }
       
-    async Imagesupload_Server(Image_Path) {
-       
-       const encoded = Image_Path.encoded;
-       const fileTye= 'image/png;base64,';
-       if(!Image_Path.encoded){
-
-            const absolutePath = await RNFetchBlob.fs.stat(Image_Path)
-            .then((stats) => {
-                console.log("##Imagestatus",stats.path);
-                return stats.path;
-            })
-            .catch((err) => {
-                console.log("Error",err);
-            });
-            await RNFetchBlob.fs.readFile(absolutePath, 'base64')
-            .then((base64) => {
-                this.setState({Signature_Image:`${fileTye}${base64}`});
-            })
-            .catch((err) => {
-                console.log("Error",err);
-            }); 
-      }  else {
-        this.setState({Signature_Image:`${fileTye}${encoded}`});
-       }       
-    }
+   
 
     UploadPhoto_API(base64String) {
         //let Image_Value = JSON.parse(base64String)
@@ -1296,10 +1272,35 @@ class Add_Timesheet extends Component {
             }
         }
     }
+
+    async Imagesupload_Server(Image_Path) {
+        const encoded = Image_Path.encoded;
+        const fileTye= 'image/png;base64,';
+        if(!Image_Path.encoded){
+ 
+             const absolutePath = await RNFetchBlob.fs.stat(Image_Path)
+             .then((stats) => {
+                 return stats.path;
+             })
+             .catch((err) => {
+                 console.log("Error",err);
+             });
+             await RNFetchBlob.fs.readFile(absolutePath, 'base64')
+             .then((base64) => {
+                 this.setState({Signature_Image:`${fileTye}${base64}`});
+             })
+             .catch((err) => {
+                 console.log("Error",err);
+             }); 
+       }  else {
+         this.setState({Signature_Image:`${fileTye}${encoded}`});
+        }    
+      
+     }
+
     Signature_Method(Route_Data, Sign_OP) {
-        if (Route_Data == "Save") {
-            this.refs["sign"].saveImage();
-            this.setState({Signature_Image:'true'});
+        if (Route_Data == "Save") {  
+          this.refs["sign"].saveImage();  
         } else if (Route_Data == "Reset") {
             if(this.refs["sign"]){
                 this.refs["sign"].resetImage();
@@ -1312,20 +1313,16 @@ class Add_Timesheet extends Component {
         }
     }
 
-    async _onSaveEvent(Sign_OP) {
+      _onSaveEvent=async (Sign_OP)=> {
         Snackbar.show({
             title: 'Image Uploaded..!',
             duration: Snackbar.LENGTH_SHORT,
         });
-        Image_Sign = Sign_OP;
-        console.log("##imageSign",Image_Sign.encoded);
         const fileTye= 'image/png;base64,';
-       
-        // if(Image_Sign.encoded){
-        //     const {encoded} = Image_Sign;
-        //    // this.setState({Signature_Image:encoded});
-        //     this.setState({Signature_Image:`${fileTye}${encoded}`});
-        // }
+         if(Sign_OP.encoded){
+            const {encoded} =  Sign_OP;       
+            this.setState({Signature_Image:`${fileTye}${encoded}`});    
+         }
        
         //console.log(this.state.Signature_Image + "Sign_OP on save event");
         try {
@@ -1342,9 +1339,10 @@ class Add_Timesheet extends Component {
               
              var path = `${RNFS.DownloadDirectoryPath}/signature.png`;
           
-             var imgsource = Image_Sign.pathName;
+             var imgsource = Sign_OP.pathName;
              RNFS.copyFile(imgsource, path).then((success) => {
                   console.log('Success');
+                  this.setState({Signature_Image:`${fileTye}${encoded}`});
                 })
                 .catch((err) => {
                   console.log("##errorPermission",err.message);
@@ -1356,7 +1354,6 @@ class Add_Timesheet extends Component {
           } catch (err) {
             console.warn(err);
           }
-
     }
 
 
@@ -1442,7 +1439,7 @@ class Add_Timesheet extends Component {
 
     render() {
 
-
+       console.log("##Signature",this.state.Signature_Image);
         return (
             <LinearGradient key="background" start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} colors={[LG_BG_THEME.APPTHEME_BG_2, LG_BG_THEME.APPTHEME_BG_2]} style={{ flex: 1, justifyContent: "center" }} >
 
@@ -2195,8 +2192,7 @@ class Add_Timesheet extends Component {
                                                                     ASB_Text={"Signature Capture"}
                                                                 />
                                                                 <View style={styles.Container_EP_1} />
-                                                                {/* <Text>{this.state.Signature_Image}</Text> */}
-                                                              {this.state.Signature_Image === 'true' || this.state.Signature_Image==='' ?
+                                                              { this.state.Signature_Image==='' ?
                                                                      <SignatureCapture
                                                                      style={{ flex: 1,height:350, borderColor: '#000033', borderWidth: 1 }}
                                                                      ref="sign"
@@ -2236,7 +2232,7 @@ class Add_Timesheet extends Component {
                                                                     <View style={{ flex: 0.47, justifyContent: "center", }}>
                                                                         <CM_BoxButton
                                                                             CMB_BuutonColourcode={this.state.Signature_Image ?LG_BG_THEME.FP_THEME : LG_BG_THEME.WHITE_THEME}
-                                                                            onPress_BuutonView={() => this.Signature_Method("Save", "")}
+                                                                            onPress_BuutonView={() => this.Signature_Method("Save", this.state.Signature_Image)}
                                                                             CMB_TextHeader={"Save"}
                                                                             Image_Status={true}
                                                                         />
