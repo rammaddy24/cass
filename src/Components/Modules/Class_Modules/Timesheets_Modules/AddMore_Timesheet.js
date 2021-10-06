@@ -824,7 +824,7 @@ class AddMore_Timesheet extends Component {
                     }
 
                     this.setState({
-                        Add_TimesheetScreen: "Step 5",
+                        Add_TimesheetScreen: "Step 6",
                         Add_TimesheetScreenIndex: 5,
                         S2_QtyArraylist_Preview: C2_QtyArraylist
                     })
@@ -847,8 +847,8 @@ class AddMore_Timesheet extends Component {
                     } else {
 
                         this.setState({
-                            Add_TimesheetScreen: "Step 6",
-                            Add_TimesheetScreenIndex: 6,
+                            Add_TimesheetScreen: "Step 5",
+                            Add_TimesheetScreenIndex: 5,
                         });
                         this.Imagesupload_Server(Image_Sign);
                     }
@@ -879,8 +879,8 @@ class AddMore_Timesheet extends Component {
 
                 if (Route_Data == "Prev") {
                     this.setState({
-                        Add_TimesheetScreen: "Step 5",
-                        Add_TimesheetScreenIndex: 5,
+                        Add_TimesheetScreen: "Step 6",
+                        Add_TimesheetScreenIndex: 6,
                     })
                 } else {
                     var C4_Cost = 0
@@ -2078,7 +2078,7 @@ class AddMore_Timesheet extends Component {
                                                             </TouchableWithoutFeedback>
 
                                                         </View>
-                                                        : this.state.Add_TimesheetScreen == "Step 5" ?
+                                                        : this.state.Add_TimesheetScreen == "Step 6" ?
 
                                                             <View style={{ flex: 1}}>
                                                                 <ScrollView  contentContainerStyle= {{justifyContent: "center" }}>
@@ -2143,7 +2143,7 @@ class AddMore_Timesheet extends Component {
                                                                 </ScrollView>
                                                             </View>
 
-                                                            : this.state.Add_TimesheetScreen == "Step 6" ?
+                                                            : this.state.Add_TimesheetScreen == "Step 5" ?
 
                                                                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                                                                     <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }}>
@@ -2626,7 +2626,7 @@ class AddMore_Timesheet extends Component {
                                                         </View>
 
 
-                                                        : this.state.Add_TimesheetScreen == "Step 5" ?
+                                                        : this.state.Add_TimesheetScreen == "Step 6" ?
                                                             <View style={{ height: height / 100 * 8, justifyContent: "center", flexDirection: 'row' }}>
 
 
@@ -2648,7 +2648,7 @@ class AddMore_Timesheet extends Component {
                                                                 </View>
 
                                                             </View>
-                                                            : this.state.Add_TimesheetScreen == "Step 6" ?
+                                                            : this.state.Add_TimesheetScreen == "Step 5" ?
                                                                 <View style={{ height: height / 100 * 8, justifyContent: "center", flexDirection: 'row' }}>
 
 
