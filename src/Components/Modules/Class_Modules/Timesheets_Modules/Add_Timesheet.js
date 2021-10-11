@@ -1378,6 +1378,36 @@ class Add_Timesheet extends Component {
         myHeaders.append("X-API-KEY", Cass_APIDetails);
         myHeaders.append("Authorization", "Basic " + base64.encode(Cass_AuthDetails));
         myHeaders.append("Content-Type", "application/json");
+        let docs_data=[];
+        for (let i = 0; i<this.state.S6_Docsupload.length; i++){
+            const fileUri = this.state.S6_Docsupload[i].Docs_URL;
+            const fileName = this.state.S6_Docsupload[i].Docs_Name;
+            const fileType =  this.state.S6_Docsupload[i].Docs_Type;
+            const downloadPath =  `${RNFS.DownloadDirectoryPath}/${fileName}`;
+    
+                 const absolutePath = await RNFetchBlob.fs.stat(downloadPath)
+                 .then((stats) => {
+                     console.log("##stats",stats);
+                     return stats.path;
+                 })
+                 .catch((err) => {
+                     console.log("Error",err);
+                 });
+                 await RNFetchBlob.fs.readFile(absolutePath, 'base64')
+                 .then((base64) => {
+
+                    const fileData= {
+                        file:`${fileType},${base64}`,
+                        title:fileName
+                    }
+                     console.log("##fileData",JSON.stringify(fileData));
+                     //console.log("##excel",base64);
+                     docs_data.push(JSON.stringify(fileData)); 
+                 })
+                 .catch((err) => {
+                     console.log("Error",err);
+                 });   
+        }
 
         let raw = JSON.stringify({
             "job_date": this.state.S1_Date,
@@ -1389,12 +1419,12 @@ class Add_Timesheet extends Component {
             "users": this.state.S1_Engineer_ArrayId.toString(),
             "work_item_id_qty": this.state.C2_QtyArraylist,
             "comments": this.state.S3_TextComments,
-            "item_details": this.state.S3_InfoArray,
+            "item_details": [...this.state.S3_InfoArray,...this.state.S3_InfoArrayTemp],
             "user_percentage": this.state.S4_CostPercentage,
             "user_cost": this.state.S4_UserAmount,
-
+            "signature": this.state.Signature_Image,
+            "files":docs_data
         });
-
         let requestOptions = {
             method: 'POST',
             headers: myHeaders,
@@ -1432,9 +1462,6 @@ class Add_Timesheet extends Component {
                 });
             });
     }
-
-
-
 
 
     render() {
@@ -2795,7 +2822,15 @@ class Add_Timesheet extends Component {
 
 
                                                         : this.state.Add_TimesheetScreen == "Step 5" ?
-                                                            <View style={{ height: height / 100 * 8, justifyContent: "center", flexDirection: 'row' }}>
+                                                          <View style={{ height: height / 100 * 8, justifyContent: "center", flexDirection: 'row' }}>
+                                                                <View style={{ flex: 0.47, justifyContent: "center", }}>
+                                                                    <CM_BoxButton
+                                                                        CMB_BuutonColourcode={LG_BG_THEME.APPTHEME_Blue}
+                                                                        onPress_BuutonView={() => this.Draft_Add()}
+                                                                        CMB_TextHeader={"Add Draft"}
+                                                                    />
+                                                                </View>
+                                                                <View style={{ flex: 0.06 }} />
 
 
                                                                 <View style={{ flex: 0.47, justifyContent: "center", }}>
@@ -2818,7 +2853,14 @@ class Add_Timesheet extends Component {
                                                             </View>
                                                             : this.state.Add_TimesheetScreen == "Step 6" ?
                                                                 <View style={{ height: height / 100 * 8, justifyContent: "center", flexDirection: 'row' }}>
-
+                                                                        <View style={{ flex: 0.47, justifyContent: "center", }}>
+                                                                            <CM_BoxButton
+                                                                                CMB_BuutonColourcode={LG_BG_THEME.APPTHEME_Blue}
+                                                                                onPress_BuutonView={() => this.Draft_Add()}
+                                                                                CMB_TextHeader={"Add Draft"}
+                                                                            />
+                                                                        </View>
+                                                                    <View style={{ flex: 0.06 }} />
 
                                                                     <View style={{ flex: 0.47, justifyContent: "center", }}>
                                                                         <CM_BoxButton
