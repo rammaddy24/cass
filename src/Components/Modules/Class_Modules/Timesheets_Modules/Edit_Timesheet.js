@@ -117,8 +117,8 @@ class Edit_Timesheet extends Component {
 
         const { TSEdit_Response, UserInfo_Response } = this.props.CommonReducer
         const { state } = this.props.navigation;
-
-
+       // const nav_route =  this.props.navigation.state.params;
+       
         AsyncStorage.getItem("Cass_UserID", (error, Token_Result) => {
             if (Token_Result != "0" || Token_Result != null) {
                 AsyncStorage.getItem("Cass_RoleID", (error, Token_RoleID) => {
@@ -1102,7 +1102,13 @@ class Edit_Timesheet extends Component {
                         //     "is_final":1,
                         //     "files":docs_data
                         // }));
-                        fetch(Timesheet_Update, {
+
+                        const { draftList } = this.props.navigation.state.params;
+                        //console.log("##navRoute",draftList);
+
+                        const servicePath = draftList ? Timesheet_Add:Timesheet_Update;
+                        console.log("##servicePath",servicePath);
+                        fetch(servicePath, {
                             method: 'POST',
                             headers: new Headers({
                                 'Authorization': "Basic " + base64.encode(Cass_AuthDetails),

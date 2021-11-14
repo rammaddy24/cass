@@ -13,7 +13,7 @@ import { Modal_Text } from '../../CommonView_Modules/Modal_Text'
 
 import { Cass_APIDetails, Cass_AuthDetails, List_Timesheet, User_Authinfo, User_Logout } from '././../../../Config/Server'
 import { Spinner } from '../../../Config/Spinner';
-
+import Draft_List from './Draft_List';
 
 import { Timesheets_DataAction } from '../../../../Redux/Actions/Timesheets_DataAction'
 import { Timesheets_EditAction } from '../../../../Redux/Actions/Timesheets_EditAction'
@@ -40,7 +40,8 @@ class Timesheet_List extends Component {
             Timelist_RA: [],
             Reset_Enable: false,
             Pagination_Status: 1,
-            TS_SearchText: ""
+            TS_SearchText: "",
+            activeTab:0
         };
         this.onEndReachedCalledDuringMomentum = true;
     }
@@ -154,7 +155,8 @@ class Timesheet_List extends Component {
 
 
             let TSInfo_URL = this.state.JobNumber != "" ? TSJob_URL : this.state.Leave_SD != "" ? TSDate_URL : this.state.Job_ID != "" ? TSJobID_URL : TSEmpty_URL
-
+            console.log("##TSInfoURL",TSInfo_URL);
+            
             fetch(TSInfo_URL, {
                 method: 'GET',
                 headers: new Headers({
@@ -464,7 +466,15 @@ class Timesheet_List extends Component {
         this.forceUpdate()
 
     }
-
+    changeActiveTab = ()=>{
+        const {activeTab} = this.state;
+        if(activeTab ===0){
+            this.setState({activeTab:1});
+        }else {
+            this.setState({activeTab:0});
+        }
+ 
+    }
 
     onEndReached = ({ distanceFromEnd }) => {
         if (!this.onEndReachedCalledDuringMomentum) {
@@ -501,217 +511,246 @@ class Timesheet_List extends Component {
                         LeftIcon_Status={true}
                         Reset_Status={true}
                     />
+                    <View>
+                        <View style = {{flexDirection:'row' }}>
+                            <TouchableOpacity onPress= {()=>this.changeActiveTab()} style= {{ padding:8,margin:8,flex:2,backgroundColor:
+                                this.state.activeTab===0? LG_BG_THEME.APPTHEME_1 :LG_BG_THEME.WHITE_THEME }}>   
+                                <Text style={{textAlign:'center',
+                                color:this.state.activeTab===0? '#FFF' : '#000'}}>
+                                    TimeSheet List
+                                </Text>
+                            </TouchableOpacity>
 
-                    <View style={{ flex: 0.02 }} />
-                    <View style={styles.Container_EP_2} />
-
-                    <View style={{ flex: 0.08, justifyContent: 'center', flexDirection: "row" }}>
-
-                        <View style={{ flexDirection: "row", flex: 0.395, justifyContent: 'center', alignItems: 'center' }}>
-
-                            <View style={{ flex: 0.3, justifyContent: 'center', alignItems: "flex-end" }}>
-                                <Image source={require('../../../../Asset/Icons/Calendar_Icon.png')} style={{ width: width / 100 * 3.5, height: width / 100 * 3.5, tintColor: LG_BG_THEME.APPTHEME_BLACK, }} />
-                            </View>
-                            <View style={{ flex: 0.7, justifyContent: 'center', alignItems: "flex-start" }}>
-                                <Text style={styles.container_TabText}>{this.state.StartDate}</Text>
-                            </View>
-                        </View>
-
-
-                        <View style={{ flex: 0.02, justifyContent: 'center' }} />
-
-                        <View style={styles.Container_TimesheetHeader}>
-                            <Text style={styles.container_TabText}>{"Total Timesheets - " + this.state.Timelist_ResponseArray.length}</Text>
-                        </View>
-                    </View>
-
-                    <View style={{ flex: 0.9, marginTop: width / 100 * 2, marginLeft: width / 100 * 6, marginRight: width / 100 * 6 }}>
-                        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-
-                            {this.state.Timelist_ResponseArray.length == 0 ?
-                                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                                    <Text style={styles.container_EmptyText}>{"No Timesheets Found..!"}</Text>
-                                </View>
-                                :
-                                <FlatList style={{ flex: 1, }}
-                                    data={this.state.Timelist_ResponseArray}
-                                    showsVerticalScrollIndicator={false}
-                                    onRefresh={() => this.Container_Reset()}
-                                    refreshing={this.state.Dashboard_Fetching}
-                                    keyExtractor={(item, index) => item.key}
-                                    onEndReached={this.onEndReached.bind(this)}
-                                    onEndReachedThreshold={0.5}
-                                    //onMomentumScrollBegin={() => { this.onEndReachedCalledDuringMomentum = false }}
-                                    onMomentumScrollEnd={() => { this.onEndReachedCalledDuringMomentum = false }}
-                                    renderItem={({ item, index }) =>
-
-                                        <Card_Timesheets
-                                            CardList_AMORE={() => this.Container_Method("Edit", item)}
-                                            CardList_Method={() => this.Container_Method("View", item)}
-                                            Card_BG={item.dept_super_admin_status == "1" && item.dept_admin_status == "0" && item.finance_status == "0" && item.engineer_status == "0" ? Notify_THEME.AW_SUPERADMIN :
-                                                item.dept_super_admin_status == "2" && item.dept_admin_status == "1" && item.finance_status == "0" && item.engineer_status == "0" ? Notify_THEME.AW_ADMIN :
-                                                    item.dept_super_admin_status == "2" && item.dept_admin_status == "2" && item.finance_status == "1" && item.engineer_status == "0" ? Notify_THEME.AW_FINANCE :
-                                                        item.dept_super_admin_status == "2" && item.dept_admin_status == "2" && item.finance_status == "2" && item.engineer_status == "0" ? Notify_THEME.AW_APPROVED :
-                                                            item.dept_super_admin_status == "1" && item.dept_admin_status == "3" && item.finance_status == "0" && item.engineer_status == "0" ? Notify_THEME.AW_SUPERADMIN :
-                                                                item.dept_super_admin_status == "1" && item.dept_admin_status == "0" && item.finance_status == "3" && item.engineer_status == "0" ? Notify_THEME.AW_SUPERADMIN :
-                                                                    Notify_THEME.AW_REJECTED}
-                                            CardText_Header1={"Job No : "}
-                                            CardText_1={item.job_no}
-                                            CardText_Header2={"Exchange : "}
-                                            CardText_2={item.exchange}
-                                            CardText_Header3={"Total :"}
-                                            CardText_3={"£ " + this.Render_Usercost(item.user_cost)}
-                                            CardText_Header4={"Qty :"}
-                                            CardText_4={this.Render_WorkQty(item.work_item_id_qty)}
-                                            CardText_Header5={"Timesheet ID : "}
-                                            CardText_5={item.id}
-                                            CardText_Header6={"Worked on: "}
-                                            CardText_Header7={"Units : "}
-                                            CardText_7={this.Render_WorkItems(item.work_item_id_qty)}
-                                            CardText_6={Moment(item.job_date).format('DD-MMMM-YY')}
-                                            ActiveStatus={parseInt(item.engineer_status) == 1 ? true : false}
-                                        />
-                                    }
-                                />
-                            }
-                        </TouchableWithoutFeedback>
-
-                        <View style={styles.Header_container}>
-                            <TouchableOpacity onPress={() => this.Floating_Button()} style={styles.Header_Innercontainer}>
-                                <Image source={require('../../../../Asset/Icons/PlusIcon.png')} style={{ width: width / 100 * 4, height: width / 100 * 4, tintColor: LG_BG_THEME.WHITE_THEME }} />
+                            <TouchableOpacity onPress= {()=>this.changeActiveTab()}  style= {{padding:8,margin:8,flex:2,backgroundColor:
+                                 this.state.activeTab===1?LG_BG_THEME.APPTHEME_1 :LG_BG_THEME.WHITE_THEME}}>   
+                                <Text style={{textAlign:'center',
+                                color: this.state.activeTab===1? '#FFF' : '#000'}}>
+                                    Draft List
+                                </Text>
                             </TouchableOpacity>
                         </View>
                     </View>
+                 
 
-                    <Modal
-                        animationType='slide'
-                        transparent={true}
-                        visible={this.state.Info_Modal}
-                        animationType="slide"
-                        onRequestClose={() => { this.setState({ Info_Modal: false }) }}>
+                    <View style={{ flex: 0.02 }} />
+                    <View style={styles.Container_EP_2} />
+                    
+                   {this.state.activeTab ===0 ?
+                    <>
+                          <View style={{ flex: 0.08, justifyContent: 'center', flexDirection: "row" }}>
 
-                        <View style={{ flex: 1, justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.5)' }}>
-                            <View style={{ height: "100%", justifyContent: 'center', alignItems: 'center', backgroundColor: 'transparent' }}>
+                            <View style={{ flexDirection: "row", flex: 0.395, justifyContent: 'center', alignItems: 'center' }}>
 
-                                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', borderRadius: width / 100 * 2, flexDirection: "row" }}>
+                                <View style={{ flex: 0.3, justifyContent: 'center', alignItems: "flex-end" }}>
+                                    <Image source={require('../../../../Asset/Icons/Calendar_Icon.png')} style={{ width: width / 100 * 3.5, height: width / 100 * 3.5, tintColor: LG_BG_THEME.APPTHEME_BLACK, }} />
+                                </View>
+                                <View style={{ flex: 0.7, justifyContent: 'center', alignItems: "flex-start" }}>
+                                    <Text style={styles.container_TabText}>{this.state.StartDate}</Text>
+                                </View>
+                            </View>
 
-                                    <View style={{ flex: 0.1, }} />
-                                    <View style={{ flex: 0.8, justifyContent: 'center' }}>
 
-                                        <View style={{ height: width / 100 * 12, justifyContent: 'center', alignSelf: 'center', backgroundColor: LG_BG_THEME.APPTHEME_1, borderTopLeftRadius: width / 100 * 2, borderTopRightRadius: width / 100 * 2, flexDirection: 'row' }}>
-                                            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                                                <Text numberOfLines={1} style={{ fontSize: fontSize.Medium, fontFamily: fontFamily.Poppins_Regular, letterSpacing: width / 100 * 0.1, color: color.Font_Whitecolor, textAlign: "center" }}>{"COLOUR INFO"}</Text>
+                            <View style={{ flex: 0.02, justifyContent: 'center' }} />
+
+                            <View style={styles.Container_TimesheetHeader}>
+                                <Text style={styles.container_TabText}>{"Total Timesheets - " + this.state.Timelist_ResponseArray.length}</Text>
+                            </View>
+                            </View>
+
+                            <View style={{ flex: 0.9, marginTop: width / 100 * 2, marginLeft: width / 100 * 6, marginRight: width / 100 * 6 }}>
+                            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+
+                                {this.state.Timelist_ResponseArray.length == 0 ?
+                                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                                        <Text style={styles.container_EmptyText}>{"No Timesheets Found..!"}</Text>
+                                    </View>
+                                    :
+                                    <FlatList style={{ flex: 1, }}
+                                        data={this.state.Timelist_ResponseArray}
+                                        showsVerticalScrollIndicator={false}
+                                        onRefresh={() => this.Container_Reset()}
+                                        refreshing={this.state.Dashboard_Fetching}
+                                        keyExtractor={(item, index) => item.key}
+                                        onEndReached={this.onEndReached.bind(this)}
+                                        onEndReachedThreshold={0.5}
+                                        //onMomentumScrollBegin={() => { this.onEndReachedCalledDuringMomentum = false }}
+                                        onMomentumScrollEnd={() => { this.onEndReachedCalledDuringMomentum = false }}
+                                        renderItem={({ item, index }) =>
+
+                                            <Card_Timesheets
+                                                CardList_AMORE={() => this.Container_Method("Edit", item)}
+                                                CardList_Method={() => this.Container_Method("View", item)}
+                                                Card_BG={item.dept_super_admin_status == "1" && item.dept_admin_status == "0" && item.finance_status == "0" && item.engineer_status == "0" ? Notify_THEME.AW_SUPERADMIN :
+                                                    item.dept_super_admin_status == "2" && item.dept_admin_status == "1" && item.finance_status == "0" && item.engineer_status == "0" ? Notify_THEME.AW_ADMIN :
+                                                        item.dept_super_admin_status == "2" && item.dept_admin_status == "2" && item.finance_status == "1" && item.engineer_status == "0" ? Notify_THEME.AW_FINANCE :
+                                                            item.dept_super_admin_status == "2" && item.dept_admin_status == "2" && item.finance_status == "2" && item.engineer_status == "0" ? Notify_THEME.AW_APPROVED :
+                                                                item.dept_super_admin_status == "1" && item.dept_admin_status == "3" && item.finance_status == "0" && item.engineer_status == "0" ? Notify_THEME.AW_SUPERADMIN :
+                                                                    item.dept_super_admin_status == "1" && item.dept_admin_status == "0" && item.finance_status == "3" && item.engineer_status == "0" ? Notify_THEME.AW_SUPERADMIN :
+                                                                        Notify_THEME.AW_REJECTED}
+                                                CardText_Header1={"Job No : "}
+                                                CardText_1={item.job_no}
+                                                CardText_Header2={"Exchange : "}
+                                                CardText_2={item.exchange}
+                                                CardText_Header3={"Total :"}
+                                                CardText_3={"£ " + this.Render_Usercost(item.user_cost)}
+                                                CardText_Header4={"Qty :"}
+                                                CardText_4={this.Render_WorkQty(item.work_item_id_qty)}
+                                                CardText_Header5={"Timesheet ID : "}
+                                                CardText_5={item.id}
+                                                CardText_Header6={"Worked on: "}
+                                                CardText_Header7={"Units : "}
+                                                CardText_7={this.Render_WorkItems(item.work_item_id_qty)}
+                                                CardText_6={Moment(item.job_date).format('DD-MMMM-YY')}
+                                                ActiveStatus={parseInt(item.engineer_status) == 1 ? true : false}
+                                            />
+                                        }
+                                    />
+                                }
+                            </TouchableWithoutFeedback>
+
+                            <View style={styles.Header_container}>
+                                <TouchableOpacity onPress={() => this.Floating_Button()} style={styles.Header_Innercontainer}>
+                                    <Image source={require('../../../../Asset/Icons/PlusIcon.png')} style={{ width: width / 100 * 4, height: width / 100 * 4, tintColor: LG_BG_THEME.WHITE_THEME }} />
+                                </TouchableOpacity>
+                            </View>
+                            </View>
+
+                            <Modal
+                            animationType='slide'
+                            transparent={true}
+                            visible={this.state.Info_Modal}
+                            animationType="slide"
+                            onRequestClose={() => { this.setState({ Info_Modal: false }) }}>
+
+                            <View style={{ flex: 1, justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.5)' }}>
+                                <View style={{ height: "100%", justifyContent: 'center', alignItems: 'center', backgroundColor: 'transparent' }}>
+
+                                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', borderRadius: width / 100 * 2, flexDirection: "row" }}>
+
+                                        <View style={{ flex: 0.1, }} />
+                                        <View style={{ flex: 0.8, justifyContent: 'center' }}>
+
+                                            <View style={{ height: width / 100 * 12, justifyContent: 'center', alignSelf: 'center', backgroundColor: LG_BG_THEME.APPTHEME_1, borderTopLeftRadius: width / 100 * 2, borderTopRightRadius: width / 100 * 2, flexDirection: 'row' }}>
+                                                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                                                    <Text numberOfLines={1} style={{ fontSize: fontSize.Medium, fontFamily: fontFamily.Poppins_Regular, letterSpacing: width / 100 * 0.1, color: color.Font_Whitecolor, textAlign: "center" }}>{"COLOUR INFO"}</Text>
+                                                </View>
+                                            </View>
+
+                                            <View style={{ height: width / 100 * 70, justifyContent: 'center', backgroundColor: LG_BG_THEME.WHITE_THEME, }}>
+
+                                                <View style={styles.Container_EP_2} />
+
+                                                <Modal_Text
+                                                    Modal_Infotext={"Awaiting Dept Super Admin..!"}
+                                                    Modal_InfoBG={Notify_THEME.AW_SUPERADMIN}
+                                                />
+
+                                                <View style={styles.Container_EP_2} />
+
+                                                <Modal_Text
+                                                    Modal_Infotext={"Awaiting Dept Admin..!"}
+                                                    Modal_InfoBG={Notify_THEME.AW_ADMIN}
+                                                />
+
+                                                <View style={styles.Container_EP_2} />
+
+                                                <Modal_Text
+                                                    Modal_Infotext={"Awaiting Finance Dept..!"}
+                                                    Modal_InfoBG={Notify_THEME.AW_FINANCE}
+                                                />
+
+                                                <View style={styles.Container_EP_2} />
+
+                                                <Modal_Text
+                                                    Modal_Infotext={"Timesheets Approved..!"}
+                                                    Modal_InfoBG={Notify_THEME.AW_APPROVED}
+                                                />
+
+                                                <View style={styles.Container_EP_2} />
+
+                                                <Modal_Text
+                                                    Modal_Infotext={"Timesheets Rejected..!"}
+                                                    Modal_InfoBG={Notify_THEME.AW_REJECTED}
+                                                />
+
+                                                <View style={styles.Container_EP_2} />
+                                            </View>
+
+                                            <View style={{ height: width / 100 * 12, justifyContent: 'center', alignSelf: 'center', backgroundColor: LG_BG_THEME.APPTHEME_1, borderBottomLeftRadius: width / 100 * 2, borderBottomRightRadius: width / 100 * 2, flexDirection: 'row' }}>
+                                                <TouchableOpacity onPress={() => this.Container_Model(false)} style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                                                    <Text numberOfLines={1} style={{ fontSize: fontSize.Medium, fontFamily: fontFamily.Poppins_Regular, letterSpacing: width / 100 * 0.1, color: color.Font_Whitecolor, textAlign: "center" }}>{"Cancel"}</Text>
+                                                </TouchableOpacity>
                                             </View>
                                         </View>
 
-                                        <View style={{ height: width / 100 * 70, justifyContent: 'center', backgroundColor: LG_BG_THEME.WHITE_THEME, }}>
+                                        <View style={{ flex: 0.1, }} />
 
-                                            <View style={styles.Container_EP_2} />
-
-                                            <Modal_Text
-                                                Modal_Infotext={"Awaiting Dept Super Admin..!"}
-                                                Modal_InfoBG={Notify_THEME.AW_SUPERADMIN}
-                                            />
-
-                                            <View style={styles.Container_EP_2} />
-
-                                            <Modal_Text
-                                                Modal_Infotext={"Awaiting Dept Admin..!"}
-                                                Modal_InfoBG={Notify_THEME.AW_ADMIN}
-                                            />
-
-                                            <View style={styles.Container_EP_2} />
-
-                                            <Modal_Text
-                                                Modal_Infotext={"Awaiting Finance Dept..!"}
-                                                Modal_InfoBG={Notify_THEME.AW_FINANCE}
-                                            />
-
-                                            <View style={styles.Container_EP_2} />
-
-                                            <Modal_Text
-                                                Modal_Infotext={"Timesheets Approved..!"}
-                                                Modal_InfoBG={Notify_THEME.AW_APPROVED}
-                                            />
-
-                                            <View style={styles.Container_EP_2} />
-
-                                            <Modal_Text
-                                                Modal_Infotext={"Timesheets Rejected..!"}
-                                                Modal_InfoBG={Notify_THEME.AW_REJECTED}
-                                            />
-
-                                            <View style={styles.Container_EP_2} />
-                                        </View>
-
-                                        <View style={{ height: width / 100 * 12, justifyContent: 'center', alignSelf: 'center', backgroundColor: LG_BG_THEME.APPTHEME_1, borderBottomLeftRadius: width / 100 * 2, borderBottomRightRadius: width / 100 * 2, flexDirection: 'row' }}>
-                                            <TouchableOpacity onPress={() => this.Container_Model(false)} style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                                                <Text numberOfLines={1} style={{ fontSize: fontSize.Medium, fontFamily: fontFamily.Poppins_Regular, letterSpacing: width / 100 * 0.1, color: color.Font_Whitecolor, textAlign: "center" }}>{"Cancel"}</Text>
-                                            </TouchableOpacity>
-                                        </View>
                                     </View>
 
-                                    <View style={{ flex: 0.1, }} />
+                                </View>
+                            </View>
+                            </Modal>
 
+                            <Modal
+                            animationType='slide'
+                            transparent={true}
+                            visible={this.state.Sorting_isVisible}
+                            onRequestClose={() => { this.onRequestClose() }}>
+                            <View style={{ flex: 1, alignSelf: 'center', backgroundColor: 'rgba(0,0,0,0.5)' }}>
+
+                                <View style={{ height: "100%", width: width / 100 * 100, justifyContent: 'center', alignItems: 'center', alignSelf: 'center', backgroundColor: 'transparent' }}>
+                                    <TouchableWithoutFeedback onPress={Keyboard.dismiss} onPressIn={() => { this.onRequestClose() }}>
+
+                                        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', borderRadius: width / 100 * 2 }}>
+                                            <View style={{ height: width / 100 * 45, width: width / 100 * 80, justifyContent: 'center', backgroundColor: color.Font_Whitecolor, borderTopLeftRadius: width / 100 * 2, borderTopRightRadius: width / 100 * 2 }}>
+
+                                                <TouchableOpacity onPress={() => this.setState({ S1_Search: "Search By Job NO" })} style={{ height: width / 100 * 9, width: width / 100 * 80, justifyContent: 'center' }}>
+                                                    <Text numberOfLines={1} style={{ fontSize: fontSize.Small, fontFamily: fontFamily.Poppins_Regular, letterSpacing: width / 100 * 0.1, color: this.state.S1_Search == "Search By Job NO" ? LG_BG_THEME.APPTHEME_1 : color.Font_lightgrey, textAlign: "justify", marginLeft: width / 100 * 3 }}>{"1. Search By Job NO "}</Text>
+                                                </TouchableOpacity>
+
+                                                <TouchableOpacity onPress={() => this.setState({ S1_Search: "Search By Exchange" })} style={{ height: width / 100 * 9, width: width / 100 * 80, justifyContent: 'center' }}>
+                                                    <Text numberOfLines={1} style={{ fontSize: fontSize.Small, fontFamily: fontFamily.Poppins_Regular, letterSpacing: width / 100 * 0.1, color: this.state.S1_Search == "Search By Exchange" ? LG_BG_THEME.APPTHEME_1 : color.Font_lightgrey, textAlign: "justify", marginLeft: width / 100 * 3 }}>{"2. Search By Exchange "}</Text>
+                                                </TouchableOpacity>
+
+                                                <TouchableOpacity onPress={() => this.setState({ S1_Search: "Search By Timesheet NO" })} style={{ height: width / 100 * 9, width: width / 100 * 80, justifyContent: 'center' }}>
+                                                    <Text numberOfLines={1} style={{ fontSize: fontSize.Small, fontFamily: fontFamily.Poppins_Regular, letterSpacing: width / 100 * 0.1, color: this.state.S1_Search == "Search By Timesheet NO" ? LG_BG_THEME.APPTHEME_1 : color.Font_lightgrey, textAlign: "justify", marginLeft: width / 100 * 3 }}>{"3. Search By Timesheet NO "}</Text>
+                                                </TouchableOpacity>
+
+                                                <View style={{ flex: 1, width: width / 100 * 70, justifyContent: 'center', borderBottomWidth: width / 100 * 0.5, borderBottomColor: LG_BG_THEME.APPTHEME_BLACK, marginLeft: width / 100 * 3, marginRight: width / 100 * 3 }}>
+                                                    <TextInput
+                                                        placeholder={this.state.S1_Search == "" ? "Select the option for Search" : this.state.S1_Search}
+                                                        returnKeyType="go"
+                                                        selectionColor={LG_BG_THEME.APPTHEME_BLACK}
+                                                        underlineColorAndroid='transparent'
+                                                        placeholderTextColor={LG_BG_THEME.APPTHEME_BLACK}
+                                                        style={styles.container_Text}
+                                                        onChangeText={(Search_Text) => this.setState({ TS_SearchText: Search_Text })}
+                                                    />
+                                                </View>
+                                                <View style={styles.Container_EP_2} />
+                                            </View>
+
+                                            <View style={{ height: width / 100 * 0.5, width: width / 100 * 80, justifyContent: 'center', alignSelf: 'center', backgroundColor: LG_BG_THEME.APPTHEME_1, marginLeft: width / 100 * 1, marginRight: width / 100 * 1 }} />
+
+                                            <View style={{ height: width / 100 * 12, width: width / 100 * 80, justifyContent: 'center', alignSelf: 'center', backgroundColor: LG_BG_THEME.APPTHEME_1, borderBottomLeftRadius: width / 100 * 2, borderBottomRightRadius: width / 100 * 2, flexDirection: 'row' }}>
+                                                <TouchableOpacity onPress={() => this.TextInput_Method(this.state.TS_SearchText, this.state.S1_Search == "Search By Job NO" ? "Job_No" : this.state.S1_Search == "Search By Timesheet NO" ? "TS_ID" : "Exchange")} style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                                                    <Text numberOfLines={1} style={{ fontSize: fontSize.Medium, fontFamily: fontFamily.Poppins_Regular, letterSpacing: width / 100 * 0.1, color: color.Font_Whitecolor, textAlign: "center" }}>{"Search"}</Text>
+                                                </TouchableOpacity>
+                                            </View>
+                                        </View>
+                                    </TouchableWithoutFeedback>
                                 </View>
 
                             </View>
-                        </View>
-                    </Modal>
 
-                    <Modal
-                        animationType='slide'
-                        transparent={true}
-                        visible={this.state.Sorting_isVisible}
-                        onRequestClose={() => { this.onRequestClose() }}>
-                        <View style={{ flex: 1, alignSelf: 'center', backgroundColor: 'rgba(0,0,0,0.5)' }}>
+                            </Modal>
 
-                            <View style={{ height: "100%", width: width / 100 * 100, justifyContent: 'center', alignItems: 'center', alignSelf: 'center', backgroundColor: 'transparent' }}>
-                                <TouchableWithoutFeedback onPress={Keyboard.dismiss} onPressIn={() => { this.onRequestClose() }}>
 
-                                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', borderRadius: width / 100 * 2 }}>
-                                        <View style={{ height: width / 100 * 45, width: width / 100 * 80, justifyContent: 'center', backgroundColor: color.Font_Whitecolor, borderTopLeftRadius: width / 100 * 2, borderTopRightRadius: width / 100 * 2 }}>
+                    </>    
+                   :
+                   <Draft_List navigation = {this.props.navigation}/>
 
-                                            <TouchableOpacity onPress={() => this.setState({ S1_Search: "Search By Job NO" })} style={{ height: width / 100 * 9, width: width / 100 * 80, justifyContent: 'center' }}>
-                                                <Text numberOfLines={1} style={{ fontSize: fontSize.Small, fontFamily: fontFamily.Poppins_Regular, letterSpacing: width / 100 * 0.1, color: this.state.S1_Search == "Search By Job NO" ? LG_BG_THEME.APPTHEME_1 : color.Font_lightgrey, textAlign: "justify", marginLeft: width / 100 * 3 }}>{"1. Search By Job NO "}</Text>
-                                            </TouchableOpacity>
-
-                                            <TouchableOpacity onPress={() => this.setState({ S1_Search: "Search By Exchange" })} style={{ height: width / 100 * 9, width: width / 100 * 80, justifyContent: 'center' }}>
-                                                <Text numberOfLines={1} style={{ fontSize: fontSize.Small, fontFamily: fontFamily.Poppins_Regular, letterSpacing: width / 100 * 0.1, color: this.state.S1_Search == "Search By Exchange" ? LG_BG_THEME.APPTHEME_1 : color.Font_lightgrey, textAlign: "justify", marginLeft: width / 100 * 3 }}>{"2. Search By Exchange "}</Text>
-                                            </TouchableOpacity>
-
-                                            <TouchableOpacity onPress={() => this.setState({ S1_Search: "Search By Timesheet NO" })} style={{ height: width / 100 * 9, width: width / 100 * 80, justifyContent: 'center' }}>
-                                                <Text numberOfLines={1} style={{ fontSize: fontSize.Small, fontFamily: fontFamily.Poppins_Regular, letterSpacing: width / 100 * 0.1, color: this.state.S1_Search == "Search By Timesheet NO" ? LG_BG_THEME.APPTHEME_1 : color.Font_lightgrey, textAlign: "justify", marginLeft: width / 100 * 3 }}>{"3. Search By Timesheet NO "}</Text>
-                                            </TouchableOpacity>
-
-                                            <View style={{ flex: 1, width: width / 100 * 70, justifyContent: 'center', borderBottomWidth: width / 100 * 0.5, borderBottomColor: LG_BG_THEME.APPTHEME_BLACK, marginLeft: width / 100 * 3, marginRight: width / 100 * 3 }}>
-                                                <TextInput
-                                                    placeholder={this.state.S1_Search == "" ? "Select the option for Search" : this.state.S1_Search}
-                                                    returnKeyType="go"
-                                                    selectionColor={LG_BG_THEME.APPTHEME_BLACK}
-                                                    underlineColorAndroid='transparent'
-                                                    placeholderTextColor={LG_BG_THEME.APPTHEME_BLACK}
-                                                    style={styles.container_Text}
-                                                    onChangeText={(Search_Text) => this.setState({ TS_SearchText: Search_Text })}
-                                                />
-                                            </View>
-                                            <View style={styles.Container_EP_2} />
-                                        </View>
-
-                                        <View style={{ height: width / 100 * 0.5, width: width / 100 * 80, justifyContent: 'center', alignSelf: 'center', backgroundColor: LG_BG_THEME.APPTHEME_1, marginLeft: width / 100 * 1, marginRight: width / 100 * 1 }} />
-
-                                        <View style={{ height: width / 100 * 12, width: width / 100 * 80, justifyContent: 'center', alignSelf: 'center', backgroundColor: LG_BG_THEME.APPTHEME_1, borderBottomLeftRadius: width / 100 * 2, borderBottomRightRadius: width / 100 * 2, flexDirection: 'row' }}>
-                                            <TouchableOpacity onPress={() => this.TextInput_Method(this.state.TS_SearchText, this.state.S1_Search == "Search By Job NO" ? "Job_No" : this.state.S1_Search == "Search By Timesheet NO" ? "TS_ID" : "Exchange")} style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                                                <Text numberOfLines={1} style={{ fontSize: fontSize.Medium, fontFamily: fontFamily.Poppins_Regular, letterSpacing: width / 100 * 0.1, color: color.Font_Whitecolor, textAlign: "center" }}>{"Search"}</Text>
-                                            </TouchableOpacity>
-                                        </View>
-                                    </View>
-                                </TouchableWithoutFeedback>
-                            </View>
-
-                        </View>
-
-                    </Modal>
+                   }
 
                 </View>
             </LinearGradient>

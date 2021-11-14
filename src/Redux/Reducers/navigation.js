@@ -18,6 +18,23 @@ export function stack(state, action) {
         });
         return Stack.router.getStateForAction(navigationAction, state);
       }
+      
+      case 'Draft_EditAction': {
+        const navigationAction = NavigationActions.navigate({
+          routeName: 'Edit_Timesheet',
+          params: { draftList: true},
+        });
+        return Stack.router.getStateForAction(navigationAction, state);
+      }
+
+      case 'Draft_DataAction': {
+        const navigationAction = NavigationActions.navigate({
+          routeName: 'View_Timesheets',
+          params: { draftList: true},
+        });
+        return Stack.router.getStateForAction(navigationAction, state);
+      }
+
       case 'Addmore_TSdata': {
         const navigationAction = NavigationActions.navigate({
           routeName: 'AddMore_Timesheet',

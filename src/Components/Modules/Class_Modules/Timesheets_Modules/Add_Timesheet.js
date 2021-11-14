@@ -1465,8 +1465,6 @@ class Add_Timesheet extends Component {
 
 
     render() {
-
-       console.log("##Signature",this.state.Signature_Image);
         return (
             <LinearGradient key="background" start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} colors={[LG_BG_THEME.APPTHEME_BG_2, LG_BG_THEME.APPTHEME_BG_2]} style={{ flex: 1, justifyContent: "center" }} >
 

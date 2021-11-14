@@ -39,6 +39,18 @@ export default function CommonReducer(state = initialState, action) {
         TSEdit_Response: action.TSEdit_Response,
       };
 
+      case "Draft_DataAction":
+        return {
+          ...state,
+          TSInfo_Response: action.TSInfo_Response,
+        };
+  
+      case "Draft_EditAction":
+        return {
+          ...state,
+          TSEdit_Response: action.TSEdit_Response,
+        };  
+
     case "Addmore_TSdata":
       return {
         ...state,

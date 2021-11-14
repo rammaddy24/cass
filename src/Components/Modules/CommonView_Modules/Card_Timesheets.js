@@ -36,10 +36,20 @@ export class Card_Timesheets extends Component {
                             <Text numberOfLines={1} style={styles.container_HeaderText}>{this.props.CardText_Header1} <Text style={styles.container_Text}>{this.props.CardText_1}</Text></Text>
                         </View>
                         </View>
+                        {
+                            this.props.DraftList == true ?
+                                <TouchableOpacity onPress={() => this.props.CardList_Delete()} style={{flex: 0.2, justifyContent: 'center', backgroundColor: this.props.Card_BG, borderBottomLeftRadius: width / 100 * 3, alignItems: "center" }}>
 
+                                    <Text numberOfLines={1} style={styles.container_ThemeText}>{"DELETE"}</Text>
+
+                                </TouchableOpacity>
+                                :
+                                <View style={{ flex: 0.2, justifyContent: 'center', }} />
+
+                        }
                         {
                             this.props.ActiveStatus == true ?
-                                <TouchableOpacity onPress={() => this.props.CardList_AMORE()} style={{ flex: 0.2, justifyContent: 'center', backgroundColor: this.props.Card_BG, borderBottomLeftRadius: width / 100 * 3, alignItems: "center" }}>
+                                <TouchableOpacity onPress={() => this.props.CardList_AMORE()} style={{  marginLeft:8,flex: 0.2, justifyContent: 'center', backgroundColor: this.props.Card_BG, borderBottomLeftRadius: width / 100 * 3, alignItems: "center" }}>
 
                                     <Text numberOfLines={1} style={styles.container_ThemeText}>{"EDIT"}</Text>
 
@@ -48,7 +58,11 @@ export class Card_Timesheets extends Component {
                                 <View style={{ flex: 0.2, justifyContent: 'center', }} />
 
                         }
+                    
+
+
                     </View>
+                  
 
                     <View style={{ flex: 0.2, justifyContent: 'center' }}>
                         <Text numberOfLines={1} style={styles.container_HeaderText}>{this.props.CardText_Header2} <Text style={styles.container_Text}>{this.props.CardText_2}</Text></Text>

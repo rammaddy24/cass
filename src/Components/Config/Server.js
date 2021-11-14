@@ -40,9 +40,11 @@ export const User_DepartmentsList = Cass_BaseURL + "user/departments_list?user_i
 export const User_WorkItems = Cass_BaseURL + "user/work_items?user_id="
 
 export const List_Timesheet = Cass_BaseURL + "timesheet/list?user_id="
+export const List_Draft = Cass_BaseURL + "timesheet/listdraft?user_id="
 export const Job_list = Cass_BaseURL + "timesheet/job_list?user_id="
 
 export const Timesheet_Add = Cass_BaseURL + "timesheet/add"
+export const Draft_Delete = Cass_BaseURL + "timesheet/deletedraft"
 export const Timesheet_Update = Cass_BaseURL + "timesheet/update"
 export const Timesheet_Delete = Cass_BaseURL + "timesheet/delete"
 export const User_Authinfo = Cass_BaseURL + "timesheet/check_login_status?user_id="
