@@ -199,7 +199,7 @@ class Draft_List extends Component {
         } else if (RouteName == "More") {
             this.setState({ Sorting_isVisible: true })
         } else {
-
+            console.log("##RouteName",RouteName);
             if (RouteName == "Edit") {
               
                 if (Route_Data.submitter_name == UserInfo_Response.first_name.concat(" "+UserInfo_Response.last_name)) {
@@ -212,7 +212,7 @@ class Draft_List extends Component {
                     });
                 }
 
-            }if(RouteName =='Delete'){
+            }else if(RouteName =='Delete'){
                 Alert.alert(
                     'Delete Draft..!',
                     'Are you sure, You want to delete this it?',

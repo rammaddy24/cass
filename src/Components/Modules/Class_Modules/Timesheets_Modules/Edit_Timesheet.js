@@ -147,7 +147,7 @@ class Edit_Timesheet extends Component {
             S4_CostPercentage_BE: JSON.parse(TSEdit_Response.user_percentage.replace(/'/g, '"')),
             // S2_QtyArraylist_Response: JSON.parse(TSEdit_Response.work_item_id_qty.replace(/'/g, '"')),
           //  S3_InfoArray: [],
-            S2_QtyArraylist_Response:JSON.parse(TSEdit_Response.work_item_id_qty.replace(/'/g, '"')),
+            S2_QtyArraylist_Response:TSEdit_Response.work_item_id_qty ?JSON.parse(TSEdit_Response.work_item_id_qty.replace(/'/g, '"')):[],
             S4_UserAmount_BE: JSON.parse(TSEdit_Response.user_cost.replace(/'/g, '"')),
             Signature_Image:TSEdit_Response.signature
         })

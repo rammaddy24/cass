@@ -127,7 +127,7 @@ class View_Timesheets extends Component {
             S3_TextComments: TSInfo_Response.comments,
 
             S1_Engineer_ArrayId: TSInfo_Response.users.split(","),
-            S2_QtyArraylist: JSON.parse(TSInfo_Response.work_item_id_qty.replace(/'/g, '"')),
+            S2_QtyArraylist: TSInfo_Response.work_item_id_qty ?JSON.parse(TSInfo_Response.work_item_id_qty.replace(/'/g, '"')):[],
             S3_InfoArray: JSON.parse(TSInfo_Response.item_details.replace(/'/g, '"')),
             S4_CostPercentage: JSON.parse(TSInfo_Response.user_percentage.replace(/'/g, '"')),
             S4_UserAmount: JSON.parse(TSInfo_Response.user_cost.replace(/'/g, '"')),
