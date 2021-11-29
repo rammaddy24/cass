@@ -41,13 +41,13 @@ class Timesheet_List extends Component {
             Reset_Enable: false,
             Pagination_Status: 1,
             TS_SearchText: "",
-            activeTab:0
+            activeTab: props.navigation.state.params.draftList?1:0
         };
         this.onEndReachedCalledDuringMomentum = true;
     }
 
     componentDidMount() {
-
+    
         AsyncStorage.getItem("Cass_UserID", (error, Token_Result) => {
             if (Token_Result != "0" || Token_Result != null) {
                 AsyncStorage.getItem("Cass_DeviceID", (error, Token_DeviceID) => {
@@ -155,8 +155,12 @@ class Timesheet_List extends Component {
 
 
             let TSInfo_URL = this.state.JobNumber != "" ? TSJob_URL : this.state.Leave_SD != "" ? TSDate_URL : this.state.Job_ID != "" ? TSJobID_URL : TSEmpty_URL
-            console.log("##TSInfoURL",TSInfo_URL);
-            
+          
+            const { draftList } = this.props.navigation.state.params;
+            if(draftList!==undefined){
+                TSInfo_URL =TSEmpty_URL;
+            }
+
             fetch(TSInfo_URL, {
                 method: 'GET',
                 headers: new Headers({
@@ -168,9 +172,10 @@ class Timesheet_List extends Component {
                 .then((response) => response.json())
                 .then((Jsonresponse) => {
 
-                    let TS_Info = ""
+                    let TS_Info = "";
                     if (Jsonresponse.status != false) {
-                        TS_Info = Jsonresponse
+                        TS_Info = Jsonresponse;
+
                         resolve({ TS_Info });
                     } else {
                         this.setState({ Dashboard_Fetching: false });

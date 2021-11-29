@@ -678,8 +678,6 @@ class Add_Timesheet extends Component {
                            
                         }
                     }
-                                
-                    
                     if (this.state.S2_Qty_Count == 0) {
                         Snackbar.show({
                             title: 'Select Work Items..!',
@@ -1374,6 +1372,27 @@ class Add_Timesheet extends Component {
     }
 
     async Draft_Add() {
+       var S2_QtyArraylist_Preview = []
+       for (let i = 0; i < this.state.S2_Quatitylist_AR.length; i++) {
+           if (this.state.S2_Quatitylist_AR[i].Is_QtyCount != 0) {
+            S2_QtyArraylist_Preview.push({
+                   "id": this.state.S2_Quatitylist_AR[i].id,
+                   "item_code": this.state.S2_Quatitylist_AR[i].item_code,
+                   "item_description": this.state.S2_Quatitylist_AR[i].item_description,
+                   "engineer_pay_price": this.state.S2_Quatitylist_AR[i].engineer_pay_price,
+                   "cass_sale_price": this.state.S2_Quatitylist_AR[i].cass_sale_price,
+                   "item_label": this.state.S2_Quatitylist_AR[i].item_label,
+                   "department_id": this.state.S2_Quatitylist_AR[i].department_id,
+                   "status": this.state.S2_Quatitylist_AR[i].status,
+                   "department_name": this.state.S2_Quatitylist_AR[i].department_name,
+                   "department_ids": this.state.S2_Quatitylist_AR[i].department_ids,
+                   "isClicked": this.state.S2_Quatitylist_AR[i].isClicked,
+                   "Is_QtyCount": this.state.S2_Quatitylist_AR[i].Is_QtyCount,
+               })
+           }
+       }
+
+  
         let myHeaders = new Headers();
         myHeaders.append("X-API-KEY", Cass_APIDetails);
         myHeaders.append("Authorization", "Basic " + base64.encode(Cass_AuthDetails));
@@ -1408,7 +1427,16 @@ class Add_Timesheet extends Component {
                      console.log("Error",err);
                  });   
         }
-
+        
+        var C2_QtyArraylist = [];
+       
+        for (let i = 0; i < S2_QtyArraylist_Preview.length; i++) {
+            C2_QtyArraylist.push({
+                "id": S2_QtyArraylist_Preview[i].id,
+                "qty": S2_QtyArraylist_Preview[i].Is_QtyCount,
+                "price": S2_QtyArraylist_Preview[i].engineer_pay_price,
+            })
+        }
         let raw = JSON.stringify({
             "job_date": this.state.S1_Date,
             "job_no": this.state.S1_Job_No,
@@ -1417,7 +1445,7 @@ class Add_Timesheet extends Component {
             "department_id": this.state.S1_Dept_ID,
             "exchange": this.state.S1_Exchange,
             "users": this.state.S1_Engineer_ArrayId.toString(),
-            "work_item_id_qty": this.state.C2_QtyArraylist,
+            "work_item_id_qty": C2_QtyArraylist,
             "comments": this.state.S3_TextComments,
             "item_details": [...this.state.S3_InfoArray,...this.state.S3_InfoArrayTemp],
             "user_percentage": this.state.S4_CostPercentage,
@@ -1425,13 +1453,14 @@ class Add_Timesheet extends Component {
             "signature": this.state.Signature_Image,
             "files":docs_data
         });
+        console.log("##requestData",raw);
         let requestOptions = {
             method: 'POST',
             headers: myHeaders,
             body: raw,
             redirect: 'follow'
         };
-
+     
         fetch("http://appbox.website/casstimesheet_beta/api/timesheet/draft", requestOptions)
             .then((response) => response.json())
             .then((Jsonresponse) => {
@@ -1441,7 +1470,10 @@ class Add_Timesheet extends Component {
                         'Are you sure, You want to Proceed?',
                         [
                             {
-                                text: 'YES', onPress: () => this.props.navigation.navigate("Timesheet_List"),
+                                text: 'YES', onPress: () => 
+                                this.props.navigation.navigate("Timesheet_List", {
+                                    draftList: true
+                                })
                             },
 
 
@@ -2700,13 +2732,13 @@ class Add_Timesheet extends Component {
                                         this.state.Add_TimesheetScreen == "Step 1" ?
 
                                             <View style={{ height: height / 100 * 16, justifyContent: "center" }}>
-                                                <View style={{ flex: 0.45, justifyContent: "center", }}>
+                                                {/* <View style={{ flex: 0.45, justifyContent: "center", }}>
                                                     <CM_ButtonDesign
                                                         CMB_BuutonColourcode={LG_BG_THEME.APPTHEME_Blue}
                                                         onPress_BuutonView={() => this.Draft_Add()}
                                                         CMB_TextHeader={"Save as Draft"}
                                                     />
-                                                </View>
+                                                </View> */}
 
                                                 <View style={{ flex: 0.1 }} />
 

@@ -135,10 +135,9 @@ class Draft_List extends Component {
             let TSJobID_URL = (List_Draft + Token_Result + "&user_role=" + Token_RoleID + "&id=" + this.state.Job_ID);
 
 
-            let TSInfo_URL = this.state.JobNumber != "" ? TSJob_URL : this.state.Leave_SD != "" ? TSDate_URL : this.state.Job_ID != "" ? TSJobID_URL : TSEmpty_URL
-            console.log("##TSInfoURL",TSInfo_URL);
+            let TSInfo_URL = this.state.JobNumber != "" ? TSJob_URL : this.state.Leave_SD != "" ? TSDate_URL : this.state.Job_ID != "" ? TSJobID_URL : TSEmpty_URL;
             
-            fetch(TSInfo_URL, {
+            fetch(TSEmpty_URL, {
                 method: 'GET',
                 headers: new Headers({
                     'Authorization': "Basic " + base64.encode(Cass_AuthDetails),
@@ -326,6 +325,29 @@ class Draft_List extends Component {
             this.onRefresh_End()
             this.onEndReachedCalledDuringMomentum = true;
         }
+    }
+
+    async Container_Reset() {
+
+        let status = 1
+        const Timesheets_Response = await this._fetch_TSInfo(this.state.CassUserID, this.state.CassRoleID, status)
+        this.setState({
+            Timelist_ResponseArray: [],
+            Timelist_RA: [],
+            Pagination_Status: 1,
+            Dashboard_Fetching: true
+        });
+        setTimeout(() => {
+            this.setState({
+                Timelist_ResponseArray: Timesheets_Response.TS_Info == undefined ? [] : Timesheets_Response.TS_Info,
+                Timelist_RA: Timesheets_Response.TS_Info == undefined ? [] : Timesheets_Response.TS_Info,
+                Pagination_Status: 1,
+                Dashboard_Fetching: false
+            });
+
+        }, 1000)
+        this.forceUpdate()
+
     }
     Floating_Button() {
         this.props.navigation.navigate("Add_Timesheet", {
