@@ -862,7 +862,7 @@ class Add_Timesheet extends Component {
                                 }
                                  console.log("##fileData",JSON.stringify(fileData));
                                  //console.log("##excel",base64);
-                                 docs_data.push(JSON.stringify(fileData)); 
+                                 docs_data.push(fileData); 
                              })
                              .catch((err) => {
                                  console.log("Error",err);
@@ -871,7 +871,7 @@ class Add_Timesheet extends Component {
                    
 
                     if (Number(C4_Cost).toFixed(0) == 100) {
-
+                  
                         fetch(Timesheet_Add, {
                             method: 'POST',
                             headers: new Headers({
@@ -894,7 +894,7 @@ class Add_Timesheet extends Component {
                                 "user_percentage": this.state.S4_CostPercentage,
                                 "user_cost": this.state.S4_UserAmount,
                                 "signature": this.state.Signature_Image,
-                                "files":docs_data
+                                "files":JSON.stringify(docs_data)
                             })
                         })
                             .then((response) => response.json())
