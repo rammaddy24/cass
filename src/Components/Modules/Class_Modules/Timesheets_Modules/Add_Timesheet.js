@@ -626,6 +626,37 @@ class Add_Timesheet extends Component {
         this.Timesheet_Add(base64String);
     }
 
+    validate_Draft(){
+
+        let C2_QtyArraylist = 0
+        for (let i = 0; i < this.state.S2_Quatitylist_Response.length; i++) {
+            
+            if (this.state.S2_Quatitylist_Response[i].Is_QtyCount != 0 && this.state.S2_Quatitylist_Response[i].additional_info == "1") {
+                C2_QtyArraylist++;
+               
+            }
+        }
+        if (this.state.S2_Qty_Count == 0) {
+            Snackbar.show({
+                title: 'Select Work Items..!',
+                duration: Snackbar.LENGTH_SHORT,
+            });
+         } 
+     
+       else if (C2_QtyArraylist != this.state.S3_InfoArray.length) {
+            Snackbar.show({
+                title: 'Enter Additional Info..!',
+                duration: Snackbar.LENGTH_SHORT,
+            });
+        } 
+        else {
+           
+            this.Draft_Add();
+        }
+
+    } 
+
+
     async Timesheet_Method(Route_Data, base64String) {
 
         if (Route_Data == "Finish") {
@@ -678,6 +709,8 @@ class Add_Timesheet extends Component {
                            
                         }
                     }
+                    console.log("##C2_QtyArraylist", C2_QtyArraylist);
+
                     if (this.state.S2_Qty_Count == 0) {
                         Snackbar.show({
                             title: 'Select Work Items..!',
@@ -1372,6 +1405,17 @@ class Add_Timesheet extends Component {
     }
 
     async Draft_Add() {
+
+       for (let i = 0; i < this.state.S1_Engineer_DataArray.length; i++) {
+        this.state.S4_CostPercentage.push(
+            (100 / (this.state.S1_Engineer_DataArray.length)).toFixed(2)
+        )
+        this.state.S4_UserAmount.push(
+            ((this.state.S2_Qty_Amount / this.state.S1_Engineer_ALength))
+        )
+    }
+
+
        var S2_QtyArraylist_Preview = []
        for (let i = 0; i < this.state.S2_Quatitylist_AR.length; i++) {
            if (this.state.S2_Quatitylist_AR[i].Is_QtyCount != 0) {
@@ -1421,7 +1465,7 @@ class Add_Timesheet extends Component {
                     }
                      console.log("##fileData",JSON.stringify(fileData));
                      //console.log("##excel",base64);
-                     docs_data.push(JSON.stringify(fileData)); 
+                     docs_data.push(fileData); 
                  })
                  .catch((err) => {
                      console.log("Error",err);
@@ -1437,6 +1481,8 @@ class Add_Timesheet extends Component {
                 "price": S2_QtyArraylist_Preview[i].engineer_pay_price,
             })
         }
+
+       
         let raw = JSON.stringify({
             "job_date": this.state.S1_Date,
             "job_no": this.state.S1_Job_No,
@@ -1451,7 +1497,7 @@ class Add_Timesheet extends Component {
             "user_percentage": this.state.S4_CostPercentage,
             "user_cost": this.state.S4_UserAmount,
             "signature": this.state.Signature_Image,
-            "files":docs_data
+            "files":JSON.stringify(docs_data)
         });
         console.log("##requestData",raw);
         let requestOptions = {
@@ -1470,7 +1516,8 @@ class Add_Timesheet extends Component {
                         'Are you sure, You want to Proceed?',
                         [
                             {
-                                text: 'YES', onPress: () => 
+                                text: 'YES',
+                                onPress: () => 
                                 this.props.navigation.navigate("Timesheet_List", {
                                     draftList: true
                                 })
@@ -2760,7 +2807,7 @@ class Add_Timesheet extends Component {
 
                                                         <CM_BoxButton
                                                             CMB_BuutonColourcode={LG_BG_THEME.APPTHEME_Blue}
-                                                            onPress_BuutonView={() => this.Draft_Add()}
+                                                            onPress_BuutonView={() => this.validate_Draft()}
                                                             CMB_TextHeader={"Add Draft"}
 
                                                         />
@@ -2792,7 +2839,7 @@ class Add_Timesheet extends Component {
                                                         <View style={{ flex: 0.47, justifyContent: "center", }}>
                                                             <CM_BoxButton
                                                                 CMB_BuutonColourcode={LG_BG_THEME.APPTHEME_Blue}
-                                                                onPress_BuutonView={() => this.Draft_Add()}
+                                                                onPress_BuutonView={() => this.validate_Draft()}
                                                                 CMB_TextHeader={"Add Draft"}
                                                             />
                                                         </View>
@@ -2824,7 +2871,7 @@ class Add_Timesheet extends Component {
                                                             <View style={{ flex: 0.47, justifyContent: "center", }}>
                                                                 <CM_BoxButton
                                                                     CMB_BuutonColourcode={LG_BG_THEME.APPTHEME_Blue}
-                                                                    onPress_BuutonView={() => this.Draft_Add()}
+                                                                    onPress_BuutonView={() => this.validate_Draft()}
                                                                     CMB_TextHeader={"Add Draft"}
                                                                 />
                                                             </View>
@@ -2856,7 +2903,7 @@ class Add_Timesheet extends Component {
                                                                 <View style={{ flex: 0.47, justifyContent: "center", }}>
                                                                     <CM_BoxButton
                                                                         CMB_BuutonColourcode={LG_BG_THEME.APPTHEME_Blue}
-                                                                        onPress_BuutonView={() => this.Draft_Add()}
+                                                                        onPress_BuutonView={() => this.validate_Draft()}
                                                                         CMB_TextHeader={"Add Draft"}
                                                                     />
                                                                 </View>
@@ -2886,7 +2933,7 @@ class Add_Timesheet extends Component {
                                                                         <View style={{ flex: 0.47, justifyContent: "center", }}>
                                                                             <CM_BoxButton
                                                                                 CMB_BuutonColourcode={LG_BG_THEME.APPTHEME_Blue}
-                                                                                onPress_BuutonView={() => this.Draft_Add()}
+                                                                                onPress_BuutonView={() => this.validate_Draft()}
                                                                                 CMB_TextHeader={"Add Draft"}
                                                                             />
                                                                         </View>
