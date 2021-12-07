@@ -1248,7 +1248,7 @@ class Edit_Timesheet extends Component {
                             "files":JSON.stringify(docs_data)
                         })
                         const servicePath = draftList ? Timesheet_Add:Timesheet_Update;
-                        const draftId = await this.Draft_Add(reqData);
+                        const draftId = draftList?await this.Draft_Add(reqData):this.state.TS_ID;
                         if(draftId){
                             fetch(servicePath, {
                                 method: 'POST',
@@ -2472,7 +2472,7 @@ class Edit_Timesheet extends Component {
                                                         </View>
                                                         : this.state.Add_TimesheetScreen == "Step 5" ?
 
-                                                            <View style={{ flex: 1, justifyContent: "center" }}>
+                                                            <View style={{ flex: 1, justifyContent: "flex-start" }}>
 
                                                                 <View style={styles.Container_EP_2} />
 
@@ -2506,15 +2506,15 @@ class Edit_Timesheet extends Component {
                                                                 } */}
 
                                                         { this.state.Signature_Image!==''   && !this.state.SignatureSaved ?
-                                                              
-                                                              <Image style={{width: 320, height: 400}} source={{uri: `https://appbox.website/casstimesheet_beta/${this.state.Signature_Image}`}}/>
-                                                                    :
+                                                              <View style = {{width: 320, height: 87,backgroundColor:"#fff" }}>
+                                                                <Image style={{width: 300, height: 87}} source={{uri: `https://appbox.website/casstimesheet_beta/${this.state.Signature_Image}`}}/>
+                                                              </View>  :
                                                                     (this.state.Signature_Image!=='' && this.state.SignatureSaved
-                                                                    ?<Image style={{width: 320, height: 400}} source={{uri: `data:${this.state.Signature_Image}`}}/>
+                                                                    ?<Image style={{width: 320, height: 87}} source={{uri: `data:${this.state.Signature_Image}`}}/>
                                                                    
                                                                     : //<Text>Encoded signature</Text>
                                                                     <SignatureCapture
-                                                                    style={{ flex: 1,height:350, borderColor: '#000033', borderWidth: 1 }}
+                                                                    style={{ flex: 1,height:87, borderColor: '#000033', borderWidth: 1 }}
                                                                     ref="sign"
                                                                     //rotateClockwise={true}
                                                                     onSaveEvent={this._onSaveEvent}
@@ -2942,8 +2942,8 @@ class Edit_Timesheet extends Component {
                                                                                         ASB_Text={"Signature"}
                                                                                     />
                                                                                     { this.state.SignatureSaved ? 
-                                                                                    <Image style={{width: 320, height: 400}} source={{uri: `data:${this.state.Signature_Image}`}}/> 
-                                                                                    :<Image style={{width: 320, height: 400}} source={{uri: `https://appbox.website/casstimesheet_beta/${this.state.Signature_Image}`}}/> 
+                                                                                    <Image style={{width: 320, height: 87}} source={{uri: `data:${this.state.Signature_Image}`}}/> 
+                                                                                    :<Image style={{width: 320, height: 87}} source={{uri: `https://appbox.website/casstimesheet_beta/${this.state.Signature_Image}`}}/> 
                                                                                     }
                                                                                     {/* <Image style={{width: 320, height: 400}} source={{uri: `data:${this.state.Signature_Image}`}}/> */}
 

@@ -688,7 +688,7 @@ class View_Timesheets extends Component {
                                        
                                         {/* <Image style={{width: 320, height: 400}} source={{uri: `data:${this.state.Signature_Image}`}}/> */}
                                         {/* <Image style={{width: 320, height: 87}} source={{uri: `https://appbox.website/casstimesheet_beta/${this.state.Signature_Image}`}}/>  */}
-                                        <View style = {{width: 320, height: 300,backgroundColor:"#fff" }}>
+                                        <View style = {{width: 320, height: 87,backgroundColor:"#fff" }}>
                                                                 <Image style={{width: 300, height: 87}} source={{uri: `https://appbox.website/casstimesheet_beta/${this.state.Signature_Image}`}}/> 
                                         </View> 
                                     </View>

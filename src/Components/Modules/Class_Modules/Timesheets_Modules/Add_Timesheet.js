@@ -2375,16 +2375,16 @@ class Add_Timesheet extends Component {
                                                                 <View style={styles.Container_EP_1} />
                                                               
                                                               { this.state.Signature_Image!=='' && !this.state.SignatureSaved ?
-                                                              <View style = {{width: 320, height: 300,backgroundColor:"#fff" }}>
+                                                              <View style = {{width: 320, height: 87,backgroundColor:"#fff" }}>
                                                                 <Image style={{width: 300, height: 87}} source={{uri: `https://appbox.website/casstimesheet_beta/${this.state.Signature_Image}`}}/> 
                                                               </View> 
                                                                      :
                                                                      (this.state.Signature_Image!=='' && this.state.SignatureSaved
-                                                                     ?<Image style={{width: 320, height: 300}} source={{uri: `data:${this.state.Signature_Image}`}}/>
+                                                                     ?<Image style={{width: 320, height: 87}} source={{uri: `data:${this.state.Signature_Image}`}}/>
                                                                     
                                                                      : 
                                                                      <SignatureCapture
-                                                                     style={{ flex: 1,height:350, borderColor: '#000033', borderWidth: 1 }}
+                                                                     style={{ flex: 1,height:87, borderColor: '#000033', borderWidth: 1 }}
                                                                      ref="sign"
                                                                      //rotateClockwise={true}
                                                                      onSaveEvent={this._onSaveEvent}
@@ -2842,11 +2842,11 @@ class Add_Timesheet extends Component {
                                                                                         ASB_Text={"Signature"}
                                                                                     />
                                                                                      {this.state.Signature_Image!=='' && this.state.SignatureSaved ?
-                                                                                    <Image style={{width: 320, height: 400}} source={{uri: `data:${this.state.Signature_Image}`}}/>
+                                                                                    <Image style={{width: 320, height: 87}} source={{uri: `data:${this.state.Signature_Image}`}}/>
                                                                                      :
 
                                                                                     //  <Image style={{width: 320, height: 400}} source={{uri: `https://appbox.website/casstimesheet_beta/${this.state.Signature_Image}`}}/>
-                                                                                    <View style = {{width: 320, height: 300,backgroundColor:"#fff" }}>
+                                                                                    <View style = {{width: 320, height: 87,backgroundColor:"#fff" }}>
                                                                                         <Image style={{width: 300, height: 87}} source={{uri: `https://appbox.website/casstimesheet_beta/${this.state.Signature_Image}`}}/> 
                                                                                     </View> 
                                                                                    }       
