@@ -4,7 +4,7 @@ import {
     View, TouchableOpacity, Image, SafeAreaView, ImageBackground, BackHandler, Alert, Platform, Modal, TextInput, ScrollView, TouchableWithoutFeedback,PermissionsAndroid
 } from 'react-native'
 import { color, width, fontSize, fontFamily, height, LG_BG_THEME } from '../../../Constants/fontsAndColors'
-import { Container, Content, connect, Picker, Header, LinearGradient, Snackbar, Moment, base64, CalendarPicker, SignatureCapture, DocumentPicker ,RNFetchBlob,RNFS} from '../../../../Asset/Libraries/NpmList';
+import { Container, Content, connect, Picker, Header, LinearGradient, Snackbar, Moment, base64, CalendarPicker, SignatureCapture, DocumentPicker ,RNFetchBlob,RNFS,ImgToBase64} from '../../../../Asset/Libraries/NpmList';
 import { Mystatusbar } from '../../../../Asset/Libraries/index'
 
 import { AS_HeaderDesign } from '../../CommonView_Modules/AS_HeaderDesign'
@@ -131,7 +131,7 @@ class Edit_Timesheet extends Component {
                 })
             }
         })
-        console.log("##ResponseEditData",JSON.stringify(TSEdit_Response));
+        console.log("##UserInfo_Response",JSON.stringify(TSEdit_Response));
         this.setState({
             CassUserID: TSEdit_Response.user_id,
             TS_ID: TSEdit_Response.id,
@@ -152,7 +152,7 @@ class Edit_Timesheet extends Component {
           //  S3_InfoArray: [],
            // S2_QtyArraylist_Response:TSEdit_Response.work_item_id_qty ?JSON.parse(TSEdit_Response.work_item_id_qty.replace(/'/g, '"')):[],
             S4_UserAmount_BE: JSON.parse(TSEdit_Response.user_cost.replace(/'/g, '"')),
-            Signature_Image:TSEdit_Response.signature
+            Signature_Image:UserInfo_Response.signature,
         })
         
         console.log("##qtyArrayList",JSON.parse(TSEdit_Response.work_item_id_qty.replace(/'/g, '"')));
@@ -205,7 +205,6 @@ class Edit_Timesheet extends Component {
                             "isClicked": true,
                             "Is_QtyCount": this.state.S2_QtyArraylist_Response[j].qty,
                             "additional_info": QtyInfo_Array[i].additional_info,
-
                         })
                         this.state.S2_Selected_QuantityId.push(QtyInfo_Array[i].id)
                     }
@@ -787,6 +786,139 @@ class Edit_Timesheet extends Component {
         }       
      }
 
+     async Draft_Add(reqData) {
+        let draftId = '';
+   
+  
+  
+         var S2_QtyArraylist_Preview = []
+         for (let i = 0; i < this.state.S2_Quatitylist_AR.length; i++) {
+             if (this.state.S2_Quatitylist_AR[i].Is_QtyCount != 0) {
+              S2_QtyArraylist_Preview.push({
+                     "id": this.state.S2_Quatitylist_AR[i].id,
+                     "item_code": this.state.S2_Quatitylist_AR[i].item_code,
+                     "item_description": this.state.S2_Quatitylist_AR[i].item_description,
+                     "engineer_pay_price": this.state.S2_Quatitylist_AR[i].engineer_pay_price,
+                     "cass_sale_price": this.state.S2_Quatitylist_AR[i].cass_sale_price,
+                     "item_label": this.state.S2_Quatitylist_AR[i].item_label,
+                     "department_id": this.state.S2_Quatitylist_AR[i].department_id,
+                     "status": this.state.S2_Quatitylist_AR[i].status,
+                     "department_name": this.state.S2_Quatitylist_AR[i].department_name,
+                     "department_ids": this.state.S2_Quatitylist_AR[i].department_ids,
+                     "isClicked": this.state.S2_Quatitylist_AR[i].isClicked,
+                     "Is_QtyCount": this.state.S2_Quatitylist_AR[i].Is_QtyCount,
+                 })
+             }
+         }
+  
+    
+          let myHeaders = new Headers();
+          myHeaders.append("X-API-KEY", Cass_APIDetails);
+          myHeaders.append("Authorization", "Basic " + base64.encode(Cass_AuthDetails));
+          myHeaders.append("Content-Type", "application/json");
+          let docs_data=[];
+          for (let i = 0; i<this.state.S6_Docsupload.length; i++){
+              const fileUri = this.state.S6_Docsupload[i].Docs_URL;
+              const fileName = this.state.S6_Docsupload[i].Docs_Name;
+              const fileType =  this.state.S6_Docsupload[i].Docs_Type;
+              const downloadPath =  `${RNFS.DownloadDirectoryPath}/${fileName}`;
+      
+                   const absolutePath = await RNFetchBlob.fs.stat(downloadPath)
+                   .then((stats) => {
+                       console.log("##stats",stats);
+                       return stats.path;
+                   })
+                   .catch((err) => {
+                       console.log("Error",err);
+                   });
+                   await RNFetchBlob.fs.readFile(absolutePath, 'base64')
+                   .then((base64) => {
+  
+                      const fileData= {
+                          file:`${fileType},${base64}`,
+                          title:fileName
+                      }
+                     
+                       //console.log("##excel",base64);
+                       docs_data.push(fileData); 
+                   })
+                   .catch((err) => {
+                       console.log("Error",err);
+                   });   
+          }
+          
+          var C2_QtyArraylist = [];
+         
+          for (let i = 0; i < S2_QtyArraylist_Preview.length; i++) {
+              C2_QtyArraylist.push({
+                  "id": S2_QtyArraylist_Preview[i].id,
+                  "qty": S2_QtyArraylist_Preview[i].Is_QtyCount,
+                  "price": S2_QtyArraylist_Preview[i].engineer_pay_price,
+              })
+          }
+       
+  
+          console.log("##requestData",reqData);
+
+
+          let requestOptions = {
+              method: 'POST',
+              headers: myHeaders,
+              body: reqData ,
+              redirect: 'follow'
+          };
+       
+        const draftData =  await fetch("http://appbox.website/casstimesheet_beta/api/timesheet/updatedraft", requestOptions)
+              .then((response) => response.json())
+              .then((Jsonresponse) => {
+                  if (Jsonresponse.status == true) {
+                     
+                      if(!reqData){
+                          Alert.alert(
+                              Jsonresponse.message + "..!",
+                              'Are you sure, You want to Proceed?',
+                              [
+                                  {
+                                      text: 'YES',
+                                      onPress: () => 
+                                      this.props.navigation.navigate("Timesheet_List", {
+                                          draftList: true
+                                      })
+                                  },
+      
+      
+                                  { text: 'NO', style: 'cancel' },
+      
+                              ],
+                              { cancelable: false }
+                          )
+                          console.log("##Jsonresponse",Jsonresponse.data);
+                       
+                      } else {
+                          console.log("##Jsonresponse",Jsonresponse.data);
+                          draftId = Jsonresponse.data;
+                          return draftId;
+                         // this.state.draftId =Jsonresponse.data; 
+                         // this.setState({draftId:Jsonresponse.data});
+                     
+                          
+                      }
+                  } else {
+                      Alert.alert("Please Choose Empty Fields " + "..!")
+                  }
+                  
+              })
+              .catch((error) => {
+                  Snackbar.show({
+                      text: "Internal Server Error..!",
+                      duration: Snackbar.LENGTH_SHORT,
+                  });
+              });
+          return  draftData;
+      
+  
+      } 
+
     async Timesheet_Method(Route_Data) {
 
         var Total_Count = 0
@@ -1096,13 +1228,9 @@ class Edit_Timesheet extends Component {
                    
 
                         const { draftList } = this.props.navigation.state.params;
-                        //console.log("##navRoute",draftList);
-
-                        const servicePath = draftList ? Timesheet_Add:Timesheet_Update;
-                  
-                        console.log("##servicePath",servicePath);
-                        console.log('##reqData',JSON.stringify({
-                            "id": this.state.TS_ID,
+                       
+                        const reqData = JSON.stringify({
+                            "id":this.state.TS_ID,
                             "department_id": this.state.S1_Dept_ID,
                             "job_no": this.state.S1_Job_No,
                             "exchange": this.state.S1_Exchange,
@@ -1115,63 +1243,67 @@ class Edit_Timesheet extends Component {
                             "item_details": [...this.state.S3_InfoArray,...this.state.S3_InfoArrayTemp],
                             "user_percentage": this.state.Engineer_Edited == true ? this.state.S4_CostPercentage_AE : this.state.S4_CostPercentage_BE,
                             "user_cost": this.state.Engineer_Edited == true ? this.state.S4_UserAmount_AE : this.state.S4_UserAmount_BE,
-                            "signature": this.state.Signature_Image,
+                            "signature": this.state.SignatureSaved?this.state.Signature_Image:'',
                             "is_final":1,
                             "files":JSON.stringify(docs_data)
-                        }));
-                        
-                        fetch(servicePath, {
-                            method: 'POST',
-                            headers: new Headers({
-                                'Authorization': "Basic " + base64.encode(Cass_AuthDetails),
-                                'X-API-KEY': Cass_APIDetails,
-                                'Content-Type': 'application/json',
-                            }),
-                            body: JSON.stringify({
-                                "id": this.state.TS_ID,
-                                "department_id": this.state.S1_Dept_ID,
-                                "job_no": this.state.S1_Job_No,
-                                "exchange": this.state.S1_Exchange,
-                                "job_date": this.state.S1_Date,
-                                "users": this.state.S1_Engineer_ArrayId.toString(),
-                                "user_id": this.state.CassUserID,
-                                "submitter_name": this.state.SubmitterName,
-                                "work_item_id_qty": C2_QtyArraylist,
-                                "comments": this.state.S3_TextComments,
-                                "item_details": [...this.state.S3_InfoArray,...this.state.S3_InfoArrayTemp],
-                                "user_percentage": this.state.Engineer_Edited == true ? this.state.S4_CostPercentage_AE : this.state.S4_CostPercentage_BE,
-                                "user_cost": this.state.Engineer_Edited == true ? this.state.S4_UserAmount_AE : this.state.S4_UserAmount_BE,
-                                "signature": this.state.Signature_Image,
-                                "is_final":1,
-                                "files":JSON.stringify(docs_data)
-                            })
                         })
-                            .then((response) => response.json())
-                            .then((Jsonresponse) => {
-                                if (Jsonresponse.status == true) {
-
-                                    console.log("##jsonResponse",Jsonresponse);
-                                    this.setState({ Dashboard_Fetching: false, Report_Success: true });
-                                    Snackbar.show({
-                                        title: Jsonresponse.message + "..!",
-                                        duration: Snackbar.LENGTH_SHORT,
-                                    });
-                                } else {
+                        const servicePath = draftList ? Timesheet_Add:Timesheet_Update;
+                        const draftId = await this.Draft_Add(reqData);
+                        if(draftId){
+                            fetch(servicePath, {
+                                method: 'POST',
+                                headers: new Headers({
+                                    'Authorization': "Basic " + base64.encode(Cass_AuthDetails),
+                                    'X-API-KEY': Cass_APIDetails,
+                                    'Content-Type': 'application/json',
+                                }),
+                                body: JSON.stringify({
+                                    "id": draftId,
+                                    "department_id": this.state.S1_Dept_ID,
+                                    "job_no": this.state.S1_Job_No,
+                                    "exchange": this.state.S1_Exchange,
+                                    "job_date": this.state.S1_Date,
+                                    "users": this.state.S1_Engineer_ArrayId.toString(),
+                                    "user_id": this.state.CassUserID,
+                                    "submitter_name": this.state.SubmitterName,
+                                    "work_item_id_qty": C2_QtyArraylist,
+                                    "comments": this.state.S3_TextComments,
+                                    "item_details": [...this.state.S3_InfoArray,...this.state.S3_InfoArrayTemp],
+                                    "user_percentage": this.state.Engineer_Edited == true ? this.state.S4_CostPercentage_AE : this.state.S4_CostPercentage_BE,
+                                    "user_cost": this.state.Engineer_Edited == true ? this.state.S4_UserAmount_AE : this.state.S4_UserAmount_BE,
+                                    "signature": this.state.SignatureSaved?this.state.Signature_Image:'',
+                                    "is_final":1,
+                                    "files":JSON.stringify(docs_data)
+                                })
+                            })
+                                .then((response) => response.json())
+                                .then((Jsonresponse) => {
+                                    if (Jsonresponse.status == true) {
+    
+                                        console.log("##jsonResponse",Jsonresponse);
+                                        this.setState({ Dashboard_Fetching: false, Report_Success: true });
+                                        Snackbar.show({
+                                            title: Jsonresponse.message + "..!",
+                                            duration: Snackbar.LENGTH_SHORT,
+                                        });
+                                    } else {
+                                        this.setState({ Dashboard_Fetching: false });
+                                        Snackbar.show({
+                                            title: Jsonresponse + "..!",
+                                            duration: Snackbar.LENGTH_SHORT,
+                                        });
+                                    }
+                                })
+                                .catch((error) => {
+                                    
                                     this.setState({ Dashboard_Fetching: false });
                                     Snackbar.show({
-                                        title: Jsonresponse + "..!",
+                                        title: "Internal Server Error..!",
                                         duration: Snackbar.LENGTH_SHORT,
                                     });
-                                }
-                            })
-                            .catch((error) => {
-                                
-                                this.setState({ Dashboard_Fetching: false });
-                                Snackbar.show({
-                                    title: "Internal Server Error..!",
-                                    duration: Snackbar.LENGTH_SHORT,
                                 });
-                            });
+                        }
+                       
                     } else {
                         Snackbar.show({
                             title: 'Please Check your Cost Percentage..!',
@@ -2351,7 +2483,7 @@ class Edit_Timesheet extends Component {
                                                                 <View style={styles.Container_EP_1} />
 
                                                               
-                                                                {!this.state.Signature_Image? 
+                                                                {/* {!this.state.Signature_Image? 
                                                                
                                                                 <SignatureCapture
                                                                 style={{ flex: 1, borderColor: '#000033', borderWidth: 1 }}
@@ -2371,7 +2503,35 @@ class Edit_Timesheet extends Component {
                                                                 this.state.SignatureSaved ? 
                                                                 <Image style={{width: 320, height: 400}} source={{uri: `data:${this.state.Signature_Image}`}}/> 
                                                                 :<Image style={{width: 320, height: 400}} source={{uri: `https://appbox.website/casstimesheet_beta/${this.state.Signature_Image}`}}/> 
-                                                                }
+                                                                } */}
+
+                                                        { this.state.Signature_Image!==''   && !this.state.SignatureSaved ?
+                                                              
+                                                              <Image style={{width: 320, height: 400}} source={{uri: `https://appbox.website/casstimesheet_beta/${this.state.Signature_Image}`}}/>
+                                                                    :
+                                                                    (this.state.Signature_Image!=='' && this.state.SignatureSaved
+                                                                    ?<Image style={{width: 320, height: 400}} source={{uri: `data:${this.state.Signature_Image}`}}/>
+                                                                   
+                                                                    : //<Text>Encoded signature</Text>
+                                                                    <SignatureCapture
+                                                                    style={{ flex: 1,height:350, borderColor: '#000033', borderWidth: 1 }}
+                                                                    ref="sign"
+                                                                    //rotateClockwise={true}
+                                                                    onSaveEvent={this._onSaveEvent}
+                                                                    onDragEvent={this._onDragEvent}
+                                                                    saveImageFileInExtStorage={true}
+                                                                 
+                                                                    showNativeButtons={false}
+                                                                    showTitleLabel={false}
+                                                                    backgroundColor={LG_BG_THEME.WHITE_THEME}
+                                                                    strokeColor={LG_BG_THEME.APPTHEME_1}
+                                                                    minStrokeWidth={4}
+                                                                    maxStrokeWidth={4}
+                                                                    viewMode={"portrait"} />
+                                                                   
+                                                                    )
+                                                                   
+                                                             }
                                                                 <View style={styles.Container_EP_2} />
 
 

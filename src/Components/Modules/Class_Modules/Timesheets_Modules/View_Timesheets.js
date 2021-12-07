@@ -132,7 +132,7 @@ class View_Timesheets extends Component {
             S4_CostPercentage: JSON.parse(TSInfo_Response.user_percentage.replace(/'/g, '"')),
             S4_UserAmount: JSON.parse(TSInfo_Response.user_cost.replace(/'/g, '"')),
             Signature_Image:TSInfo_Response.signature,
-            S6_Docsupload:[]
+            S6_Docsupload:TSInfo_Response.file_details
         })
         this.forceUpdate()
 
@@ -671,7 +671,7 @@ class View_Timesheets extends Component {
                                                     </View>
 
                                                     <View style={{ flex: 0.7, justifyContent: "center", alignItems: "flex-start" }}>
-                                                        <Text numberOfLines={2} style={styles.S6_BMedium}>{item.Docs_Name}</Text>
+                                                        <Text numberOfLines={2} style={styles.S6_BMedium}>{item.title}</Text>
                                                     </View>
 
                                                     <View style={{ flex: 0.1, justifyContent: "center" }} />
@@ -685,8 +685,12 @@ class View_Timesheets extends Component {
                                         <TS_HeadingView
                                             ASB_Text={"Signature"}
                                         />
+                                       
                                         {/* <Image style={{width: 320, height: 400}} source={{uri: `data:${this.state.Signature_Image}`}}/> */}
-                                        <Image style={{width: 320, height: 400}} source={{uri: `https://appbox.website/casstimesheet_beta/${this.state.Signature_Image}`}}/> 
+                                        {/* <Image style={{width: 320, height: 87}} source={{uri: `https://appbox.website/casstimesheet_beta/${this.state.Signature_Image}`}}/>  */}
+                                        <View style = {{width: 320, height: 300,backgroundColor:"#fff" }}>
+                                                                <Image style={{width: 300, height: 87}} source={{uri: `https://appbox.website/casstimesheet_beta/${this.state.Signature_Image}`}}/> 
+                                        </View> 
                                     </View>
                                 </ScrollView>
 

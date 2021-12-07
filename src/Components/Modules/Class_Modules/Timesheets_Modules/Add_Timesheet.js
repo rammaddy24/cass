@@ -88,14 +88,18 @@ class Add_Timesheet extends Component {
 
             AddionalInfo_Modal: false,
             S6_Docsupload: [],
-            Signature_Image:''
+            Signature_Image:'',
+            SignatureSaved:false,
+            draftId:''
         };
 
     }
 
     componentDidMount() {
 
-        const { UserInfo_Response } = this.props.CommonReducer
+        const { UserInfo_Response } = this.props.CommonReducer;
+
+        console.log("##userInfoResponse",UserInfo_Response);
         const { state } = this.props.navigation;
         let Calendar_Date = state.params.CalendarDate
 
@@ -121,6 +125,7 @@ class Add_Timesheet extends Component {
             SubmitterName: UserInfo_Response.first_name.concat(" " + UserInfo_Response.last_name),
             S1_Date: Moment(Calendar_Date).format('YYYY-MM-DD'),
             S1_DateVisible: Moment(Calendar_Date).format('DD-MM-YYYY'),
+            Signature_Image:UserInfo_Response.signature,
         })
         this.Timesheet_Method();
     }
@@ -904,15 +909,32 @@ class Add_Timesheet extends Component {
                    
 
                     if (Number(C4_Cost).toFixed(0) == 100) {
-                  
-                        fetch(Timesheet_Add, {
-                            method: 'POST',
-                            headers: new Headers({
-                                'Authorization': "Basic " + base64.encode(Cass_AuthDetails),
-                                'X-API-KEY': Cass_APIDetails,
-                                'Content-Type': 'application/json',
-                            }),
-                            body: JSON.stringify({
+                        
+                        
+                       const reqData = JSON.stringify({
+                        "department_id": this.state.S1_Dept_ID,
+                        "job_no": this.state.S1_Job_No,
+                        "exchange": this.state.S1_Exchange,
+                        "job_date": this.state.S1_Date,
+                        "users": this.state.S1_Engineer_ArrayId.toString(),
+                        "user_id": this.state.CassUserID,
+                        "submitter_name": this.state.SubmitterName,
+                        "work_item_id_qty": C2_QtyArraylist,
+                        "comments": this.state.S3_TextComments,
+                       // "item_details": this.state.S3_InfoArray,
+                        "item_details": [...this.state.S3_InfoArray,...this.state.S3_InfoArrayTemp],
+                        "user_percentage": this.state.S4_CostPercentage,
+                        "user_cost": this.state.S4_UserAmount,
+                        "signature": this.state.SignatureSaved?this.state.Signature_Image:'',
+                        "files":JSON.stringify(docs_data)
+                    });
+              
+                      
+                         
+                         const draftId = await this.Draft_Add(reqData);
+                        if(draftId){
+                            console.log("##AddData",JSON.stringify({
+                                "id":draftId,
                                 "department_id": this.state.S1_Dept_ID,
                                 "job_no": this.state.S1_Job_No,
                                 "exchange": this.state.S1_Exchange,
@@ -926,37 +948,66 @@ class Add_Timesheet extends Component {
                                 "item_details": [...this.state.S3_InfoArray,...this.state.S3_InfoArrayTemp],
                                 "user_percentage": this.state.S4_CostPercentage,
                                 "user_cost": this.state.S4_UserAmount,
-                                "signature": this.state.Signature_Image,
+                                "signature": this.state.SignatureSaved?this.state.Signature_Image:'',
                                 "files":JSON.stringify(docs_data)
+                            }));
+    
+                            fetch(Timesheet_Add, {
+                                method: 'POST',
+                                headers: new Headers({
+                                    'Authorization': "Basic " + base64.encode(Cass_AuthDetails),
+                                    'X-API-KEY': Cass_APIDetails,
+                                    'Content-Type': 'application/json',
+                                }),
+                                body: JSON.stringify({
+                                    "id":draftId,
+                                    "department_id": this.state.S1_Dept_ID,
+                                    "job_no": this.state.S1_Job_No,
+                                    "exchange": this.state.S1_Exchange,
+                                    "job_date": this.state.S1_Date,
+                                    "users": this.state.S1_Engineer_ArrayId.toString(),
+                                    "user_id": this.state.CassUserID,
+                                    "submitter_name": this.state.SubmitterName,
+                                    "work_item_id_qty": C2_QtyArraylist,
+                                    "comments": this.state.S3_TextComments,
+                                   // "item_details": this.state.S3_InfoArray,
+                                    "item_details": [...this.state.S3_InfoArray,...this.state.S3_InfoArrayTemp],
+                                    "user_percentage": this.state.S4_CostPercentage,
+                                    "user_cost": this.state.S4_UserAmount,
+                                    "signature": this.state.SignatureSaved?this.state.Signature_Image:'',
+                                    "files":JSON.stringify(docs_data)
+                                })
                             })
-                        })
-                            .then((response) => response.json())
-                            .then((Jsonresponse) => {
-                                if (Jsonresponse.status == true) {
-                                    this.setState({ Dashboard_Fetching: false, Report_Success: true });
-                                    console.log(base64String + "inside of the timesheet add");
-                                    console.log("##backendResponse",Jsonresponse.message );
-                                    Snackbar.show({
-                                        title: Jsonresponse.message + "..!",
-                                        duration: Snackbar.LENGTH_SHORT,
-                                    });
-                                } else {
-                                    console.log("##backendResponse",Jsonresponse);
+                                .then((response) => response.json())
+                                .then((Jsonresponse) => {
+                                    if (Jsonresponse.status == true) {
+                                        this.setState({ Dashboard_Fetching: false, Report_Success: true });
+                                        console.log(base64String + "inside of the timesheet add");
+                                        console.log("##backendResponse",Jsonresponse.message );
+                                        Snackbar.show({
+                                            title: Jsonresponse.message + "..!",
+                                            duration: Snackbar.LENGTH_SHORT,
+                                        });
+                                    } else {
+                                        console.log("##backendResponse",Jsonresponse);
+                                        this.setState({ Dashboard_Fetching: false });
+                                        Snackbar.show({
+                                            title: Jsonresponse + "..!",
+                                            duration: Snackbar.LENGTH_SHORT,
+                                        });
+                                    }
+                                })
+                                .catch((error) => {
+                                    console.log("##serverError",error);
                                     this.setState({ Dashboard_Fetching: false });
                                     Snackbar.show({
-                                        title: Jsonresponse + "..!",
+                                        title: "Internal Server Error..!",
                                         duration: Snackbar.LENGTH_SHORT,
                                     });
-                                }
-                            })
-                            .catch((error) => {
-                                console.log("##serverError",error);
-                                this.setState({ Dashboard_Fetching: false });
-                                Snackbar.show({
-                                    title: "Internal Server Error..!",
-                                    duration: Snackbar.LENGTH_SHORT,
                                 });
-                            });
+
+                        }
+                         
                     } else {
                         Snackbar.show({
                             title: 'Please Check your Cost Percentage..!',
@@ -1332,10 +1383,14 @@ class Add_Timesheet extends Component {
     Signature_Method(Route_Data, Sign_OP) {
         if (Route_Data == "Save") {  
           this.refs["sign"].saveImage();  
+          this.setState({SignatureSaved:true});
         } else if (Route_Data == "Reset") {
             if(this.refs["sign"]){
                 this.refs["sign"].resetImage();
+              
             }
+            this.setState({SignatureSaved:false});
+            this.setState({SignatureExist:false});
              this.setState({Signature_Image:''});
             Snackbar.show({
                 title: 'Image Reset..!',
@@ -1404,8 +1459,8 @@ class Add_Timesheet extends Component {
         this.forceUpdate()
     }
 
-    async Draft_Add() {
-
+    async Draft_Add(reqData) {
+      let draftId = '';
        for (let i = 0; i < this.state.S1_Engineer_DataArray.length; i++) {
         this.state.S4_CostPercentage.push(
             (100 / (this.state.S1_Engineer_DataArray.length)).toFixed(2)
@@ -1463,7 +1518,7 @@ class Add_Timesheet extends Component {
                         file:`${fileType},${base64}`,
                         title:fileName
                     }
-                     console.log("##fileData",JSON.stringify(fileData));
+                   
                      //console.log("##excel",base64);
                      docs_data.push(fileData); 
                  })
@@ -1482,6 +1537,7 @@ class Add_Timesheet extends Component {
             })
         }
 
+
        
         let raw = JSON.stringify({
             "job_date": this.state.S1_Date,
@@ -1496,50 +1552,71 @@ class Add_Timesheet extends Component {
             "item_details": [...this.state.S3_InfoArray,...this.state.S3_InfoArrayTemp],
             "user_percentage": this.state.S4_CostPercentage,
             "user_cost": this.state.S4_UserAmount,
-            "signature": this.state.Signature_Image,
+            "signature": this.state.SignatureSaved?this.state.Signature_Image:'',
             "files":JSON.stringify(docs_data)
         });
-        console.log("##requestData",raw);
+        console.log("##requestData",reqData);
+       
         let requestOptions = {
             method: 'POST',
             headers: myHeaders,
-            body: raw,
+            body: reqData?reqData:raw ,
             redirect: 'follow'
         };
      
-        fetch("http://appbox.website/casstimesheet_beta/api/timesheet/draft", requestOptions)
+      const draftData =  await fetch("http://appbox.website/casstimesheet_beta/api/timesheet/draft", requestOptions)
             .then((response) => response.json())
             .then((Jsonresponse) => {
                 if (Jsonresponse.status == true) {
-                    Alert.alert(
-                        Jsonresponse.message + "..!",
-                        'Are you sure, You want to Proceed?',
-                        [
-                            {
-                                text: 'YES',
-                                onPress: () => 
-                                this.props.navigation.navigate("Timesheet_List", {
-                                    draftList: true
-                                })
-                            },
-
-
-                            { text: 'NO', style: 'cancel' },
-
-                        ],
-                        { cancelable: false }
-                    )
+                   
+                    if(!reqData){
+                        Alert.alert(
+                            Jsonresponse.message + "..!",
+                            'Are you sure, You want to Proceed?',
+                            [
+                                {
+                                    text: 'YES',
+                                    onPress: () => 
+                                    this.props.navigation.navigate("Timesheet_List", {
+                                        draftList: true
+                                    })
+                                },
+    
+    
+                                { text: 'NO', style: 'cancel' },
+    
+                            ],
+                            { cancelable: false }
+                        )
+                        
+                    } else {
+                        console.log("##Jsonresponse",Jsonresponse.data);
+                        draftId = Jsonresponse.data;
+                        return draftId;
+                       // this.state.draftId =Jsonresponse.data; 
+                       // this.setState({draftId:Jsonresponse.data});
+                   
+                        
+                    }
+                 
 
                 } else {
                     Alert.alert("Please Choose Empty Fields " + "..!")
                 }
+
+
+                
             })
             .catch((error) => {
+                console.log("##error2",error);
                 Snackbar.show({
                     text: "Internal Server Error..!",
                     duration: Snackbar.LENGTH_SHORT,
                 });
             });
+        return  draftData;
+    
+
     }
 
 
@@ -2296,7 +2373,16 @@ class Add_Timesheet extends Component {
                                                                     ASB_Text={"Signature Capture"}
                                                                 />
                                                                 <View style={styles.Container_EP_1} />
-                                                              { this.state.Signature_Image==='' ?
+                                                              
+                                                              { this.state.Signature_Image!=='' && !this.state.SignatureSaved ?
+                                                              <View style = {{width: 320, height: 300,backgroundColor:"#fff" }}>
+                                                                <Image style={{width: 300, height: 87}} source={{uri: `https://appbox.website/casstimesheet_beta/${this.state.Signature_Image}`}}/> 
+                                                              </View> 
+                                                                     :
+                                                                     (this.state.Signature_Image!=='' && this.state.SignatureSaved
+                                                                     ?<Image style={{width: 320, height: 300}} source={{uri: `data:${this.state.Signature_Image}`}}/>
+                                                                    
+                                                                     : 
                                                                      <SignatureCapture
                                                                      style={{ flex: 1,height:350, borderColor: '#000033', borderWidth: 1 }}
                                                                      ref="sign"
@@ -2312,8 +2398,9 @@ class Add_Timesheet extends Component {
                                                                      minStrokeWidth={4}
                                                                      maxStrokeWidth={4}
                                                                      viewMode={"portrait"} />
-                                                                     :
-                                                                     <Image style={{width: 320, height: 400}} source={{uri: `data:${this.state.Signature_Image}`}}/>
+                                                                    
+                                                                     )
+                                                                    
                                                               }
                                                              
                                                                
@@ -2754,8 +2841,15 @@ class Add_Timesheet extends Component {
                                                                                     <TS_HeadingView
                                                                                         ASB_Text={"Signature"}
                                                                                     />
+                                                                                     {this.state.Signature_Image!=='' && this.state.SignatureSaved ?
                                                                                     <Image style={{width: 320, height: 400}} source={{uri: `data:${this.state.Signature_Image}`}}/>
+                                                                                     :
 
+                                                                                    //  <Image style={{width: 320, height: 400}} source={{uri: `https://appbox.website/casstimesheet_beta/${this.state.Signature_Image}`}}/>
+                                                                                    <View style = {{width: 320, height: 300,backgroundColor:"#fff" }}>
+                                                                                        <Image style={{width: 300, height: 87}} source={{uri: `https://appbox.website/casstimesheet_beta/${this.state.Signature_Image}`}}/> 
+                                                                                    </View> 
+                                                                                   }       
                                                                                 </View>
                                                                             </ScrollView>
 

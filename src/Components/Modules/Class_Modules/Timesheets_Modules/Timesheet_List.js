@@ -47,7 +47,11 @@ class Timesheet_List extends Component {
     }
 
     componentDidMount() {
-    
+        
+        this.backHandler = BackHandler.addEventListener(
+            "hardwareBackPress",
+            this.backAction
+          );
         AsyncStorage.getItem("Cass_UserID", (error, Token_Result) => {
             if (Token_Result != "0" || Token_Result != null) {
                 AsyncStorage.getItem("Cass_DeviceID", (error, Token_DeviceID) => {
@@ -63,6 +67,19 @@ class Timesheet_List extends Component {
         })
 
     }
+    backAction = () => {
+        const {activeTab} = this.state;
+        if(activeTab ===1){
+          this.props.navigation.navigate('Dashboard');
+        }
+      
+      };
+
+    
+  componentWillUnmount() {
+    this.backHandler.remove();
+  }
+  
 
 
     async API_AUTH(Token_Result, Token_DeviceID, Token_NotifyID) {
@@ -202,7 +219,7 @@ class Timesheet_List extends Component {
         const { UserInfo_Response } = this.props.CommonReducer
 
         if (RouteName == "Goback") {
-            this.props.navigation.goBack()
+            this.props.navigation.navigate('Dashboard');
         } else if (RouteName == "Info") {
             this.setState({ Info_Modal: true })
         } else if (RouteName == "More") {
