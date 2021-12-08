@@ -153,6 +153,7 @@ class Edit_Timesheet extends Component {
            // S2_QtyArraylist_Response:TSEdit_Response.work_item_id_qty ?JSON.parse(TSEdit_Response.work_item_id_qty.replace(/'/g, '"')):[],
             S4_UserAmount_BE: JSON.parse(TSEdit_Response.user_cost.replace(/'/g, '"')),
             Signature_Image:UserInfo_Response.signature,
+            S6_Docsupload:TSEdit_Response.file_details
         })
         
         console.log("##qtyArrayList",JSON.parse(TSEdit_Response.work_item_id_qty.replace(/'/g, '"')));
@@ -788,9 +789,6 @@ class Edit_Timesheet extends Component {
 
      async Draft_Add(reqData) {
         let draftId = '';
-   
-  
-  
          var S2_QtyArraylist_Preview = []
          for (let i = 0; i < this.state.S2_Quatitylist_AR.length; i++) {
              if (this.state.S2_Quatitylist_AR[i].Is_QtyCount != 0) {
@@ -819,7 +817,7 @@ class Edit_Timesheet extends Component {
           let docs_data=[];
           for (let i = 0; i<this.state.S6_Docsupload.length; i++){
               const fileUri = this.state.S6_Docsupload[i].Docs_URL;
-              const fileName = this.state.S6_Docsupload[i].Docs_Name;
+              const fileName = this.state.S6_Docsupload[i].title;
               const fileType =  this.state.S6_Docsupload[i].Docs_Type;
               const downloadPath =  `${RNFS.DownloadDirectoryPath}/${fileName}`;
       
@@ -892,7 +890,7 @@ class Edit_Timesheet extends Component {
                               ],
                               { cancelable: false }
                           )
-                          console.log("##Jsonresponse",Jsonresponse.data);
+                          
                        
                       } else {
                           console.log("##Jsonresponse",Jsonresponse.data);
@@ -1083,9 +1081,10 @@ class Edit_Timesheet extends Component {
                     }
 
 
-                    var C4_Cost = []
+                    var C4_Cost = [];
 
                     if (this.state.Engineer_Edited == true) {
+                        console.log("##engineerEdited",this.state.S4_CostPercentage_AE);
                         for (let i = 0; i < this.state.S4_CostPercentage_AE.length; i++) {
                             C4_Cost.push({
                                 "C4_Cost": this.state.S4_CostPercentage_AE[i],
@@ -1093,6 +1092,7 @@ class Edit_Timesheet extends Component {
                             })
                         }
                     } else {
+                        console.log("##engineerNotEdited",this.state.S4_CostPercentage_BE);
                         for (let i = 0; i < this.state.S4_CostPercentage_BE.length; i++) {
                             C4_Cost.push({
                                 "C4_Cost": this.state.S4_CostPercentage_BE[i],
@@ -1100,7 +1100,7 @@ class Edit_Timesheet extends Component {
                             })
                         }
                     }
-
+                    console.log("##c4Cost",C4_Cost);
 
                     this.setState({
                         Add_TimesheetScreen: "Step 5",
@@ -1196,7 +1196,7 @@ class Edit_Timesheet extends Component {
                     let docs_data=[];
                     for (let i = 0; i<this.state.S6_Docsupload.length; i++){
                         const fileUri = this.state.S6_Docsupload[i].Docs_URL;
-                        const fileName = this.state.S6_Docsupload[i].Docs_Name;
+                        const fileName = this.state.S6_Docsupload[i].title;
                         const fileType =  this.state.S6_Docsupload[i].Docs_Type;
                         const downloadPath =  `${RNFS.DownloadDirectoryPath}/${fileName}`;
                    
@@ -1227,7 +1227,7 @@ class Edit_Timesheet extends Component {
                     if (Number(C4_Cost).toFixed(0) == 100) {
                    
 
-                        const { draftList } = this.props.navigation.state.params;
+                        const  draftList  =  get(this.props.navigation.state,'params.draftList','');
                        
                         const reqData = JSON.stringify({
                             "id":this.state.TS_ID,
@@ -1247,8 +1247,12 @@ class Edit_Timesheet extends Component {
                             "is_final":1,
                             "files":JSON.stringify(docs_data)
                         })
-                        const servicePath = draftList ? Timesheet_Add:Timesheet_Update;
-                        const draftId = draftList?await this.Draft_Add(reqData):this.state.TS_ID;
+                        const servicePath = draftList
+                         ? Timesheet_Add:Timesheet_Update;
+                      
+                       // const draftId = draftList?await this.Draft_Add(reqData):this.state.TS_ID;
+                        const draftId = await this.Draft_Add(reqData);
+                     
                         if(draftId){
                             fetch(servicePath, {
                                 method: 'POST',
@@ -1597,7 +1601,7 @@ class Edit_Timesheet extends Component {
                 
                 const fileExtension = ext.replace('.','');
                 Docs = ({
-                    "Docs_Name": res[hv].name,
+                    "title": res[hv].name,
                     "Docs_URL": res[hv].uri,
                     "Docs_ID": [hv],
                     "Docs_Type":fileExtension
@@ -2356,6 +2360,11 @@ class Edit_Timesheet extends Component {
                                                                                     <View style={{ flex: 0.4, justifyContent: 'center', backgroundColor: LG_BG_THEME.WHITE_THEME, opacity: 0.8 }}>
                                                                                         <Text style={styles.S2_container_BlackText}>{item.blockage}</Text>
                                                                                     </View>
+                                                                                    {item.Is_Status !==true &&
+                                                                                        <TouchableOpacity onPress={() => this.S3_ToggleMethod(item, index)} style={{ flex: 0.1, justifyContent: 'center', alignItems: 'center' }}>
+                                                                                            <Image source={require('../../../../Asset/Icons/Delete_Icon.png')} style={{ width: width / 100 * 5, height: width / 100 * 5, tintColor: LG_BG_THEME.APPTHEME_BLACK, }} />
+                                                                                        </TouchableOpacity>
+                                                                                    }
 
 
                                                                                 </View>
@@ -2441,10 +2450,12 @@ class Edit_Timesheet extends Component {
                                                                                             }
                                                                                         }}
                                                                                         onSubmitEditing={() => this.Timesheet_Method("Next")}
-                                                                                        value={this.state.Engineer_Edited == true ? this.state.S4_CostPercentage_AE[index] == undefined ? "0.0" : 
-                                                                                         parseInt(this.state.S4_CostPercentage_AE[index]).toFixed(0)
-                                                                                         : (this.state.S4_CostPercentage_BE[index] == undefined ? "0.0" :
-                                                                                         parseInt( this.state.S4_CostPercentage_BE[index]).toFixed(0))}
+                                                                                        value={this.state.Engineer_Edited == true ? 
+                                                                                        ( !this.state.S4_CostPercentage_AE[index]? "" : 
+                                                                                          parseInt(this.state.S4_CostPercentage_AE[index]).toFixed(0))
+                                                                                         : (!this.state.S4_CostPercentage_BE[index]  ? "" :
+                                                                                         parseInt( this.state.S4_CostPercentage_BE[index]).toFixed(0))
+                                                                                        }
                                                                                     />
                                                                                 </View>
 
@@ -2594,7 +2605,7 @@ class Edit_Timesheet extends Component {
                                                                                             </View>
 
                                                                                             <View style={{ flex: 0.7, justifyContent: "center", alignItems: "flex-start" }}>
-                                                                                                <Text numberOfLines={2} style={styles.S6_BMedium}>{item.Docs_Name}</Text>
+                                                                                                <Text numberOfLines={2} style={styles.S6_BMedium}>{item.title}</Text>
                                                                                             </View>
 
                                                                                             <TouchableOpacity onPress={() => this.DelteImage_Method(item)} style={{ flex: 0.1, justifyContent: "center" }}>
@@ -2928,7 +2939,7 @@ class Edit_Timesheet extends Component {
                                                                                                 </View>
 
                                                                                                 <View style={{ flex: 0.7, justifyContent: "center", alignItems: "flex-start" }}>
-                                                                                                    <Text numberOfLines={2} style={styles.S6_BMedium}>{item.Docs_Name}</Text>
+                                                                                                    <Text numberOfLines={2} style={styles.S6_BMedium}>{item.title}</Text>
                                                                                                 </View>
 
                                                                                                 <View style={{ flex: 0.1, justifyContent: "center" }} />

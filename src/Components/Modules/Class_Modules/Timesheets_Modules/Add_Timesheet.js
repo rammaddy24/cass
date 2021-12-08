@@ -2363,12 +2363,7 @@ class Add_Timesheet extends Component {
                                                         : this.state.Add_TimesheetScreen == "Step 6" ?
                                                            <View style={{ flex: 1}}>
                                                             <ScrollView  contentContainerStyle= {{justifyContent: "center" }}>
-
-
-
                                                                 <View style={styles.Container_EP_2} />
-
-
                                                                 <TS_HeadingView
                                                                     ASB_Text={"Signature Capture"}
                                                                 />
