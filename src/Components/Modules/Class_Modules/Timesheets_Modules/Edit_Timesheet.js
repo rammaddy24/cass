@@ -131,7 +131,7 @@ class Edit_Timesheet extends Component {
                 })
             }
         })
-        console.log("##UserInfo_Response",JSON.stringify(TSEdit_Response));
+        console.log("##editInfo_Response",JSON.stringify(TSEdit_Response));
         this.setState({
             CassUserID: TSEdit_Response.user_id,
             TS_ID: TSEdit_Response.id,
@@ -960,6 +960,8 @@ class Edit_Timesheet extends Component {
                     this.Total_Qtycalculation()
                 }
             } else if (this.state.Add_TimesheetScreenIndex == 2) {
+                const infoArray= this.state.S3_InfoArray.filter(item => item.Is_Status == true);
+
                 if (Route_Data == "Prev") {
                     this.setState({
                
@@ -975,18 +977,22 @@ class Edit_Timesheet extends Component {
                            
                         }
                     }
+                    console.log("##C2_QtyArraylist",C2_QtyArraylist);
+                    console.log("##infoArray",this.state.S3_InfoArray);
                     if (this.state.S2_Qty_Count == 0) {
                         Snackbar.show({
                             title: 'Select Work Items..!',
                             duration: Snackbar.LENGTH_SHORT,
                         });
-                    } else if (C2_QtyArraylist != this.state.S3_InfoArray.length) {
+                    } else if (C2_QtyArraylist !==0 && C2_QtyArraylist != infoArray.length) {
                         Snackbar.show({
                             title: 'Enter Additional Info..!',
                             duration: Snackbar.LENGTH_SHORT,
                         });
                     } else {
-                   
+                        if(C2_QtyArraylist ===0){
+                            this.setState({S3_InfoArray:[]});
+                        }
                       
                         this.setState({
                             Add_TimesheetScreen: "Step 3",
@@ -1229,29 +1235,32 @@ class Edit_Timesheet extends Component {
 
                         const  draftList  =  get(this.props.navigation.state,'params.draftList','');
                        
-                        const reqData = JSON.stringify({
-                            "id":this.state.TS_ID,
-                            "department_id": this.state.S1_Dept_ID,
-                            "job_no": this.state.S1_Job_No,
-                            "exchange": this.state.S1_Exchange,
-                            "job_date": this.state.S1_Date,
-                            "users": this.state.S1_Engineer_ArrayId.toString(),
-                            "user_id": this.state.CassUserID,
-                            "submitter_name": this.state.SubmitterName,
-                            "work_item_id_qty": C2_QtyArraylist,
-                            "comments": this.state.S3_TextComments,
-                            "item_details": [...this.state.S3_InfoArray,...this.state.S3_InfoArrayTemp],
-                            "user_percentage": this.state.Engineer_Edited == true ? this.state.S4_CostPercentage_AE : this.state.S4_CostPercentage_BE,
-                            "user_cost": this.state.Engineer_Edited == true ? this.state.S4_UserAmount_AE : this.state.S4_UserAmount_BE,
-                            "signature": this.state.SignatureSaved?this.state.Signature_Image:'',
-                            "is_final":1,
-                            "files":JSON.stringify(docs_data)
-                        })
+                        // const reqData = JSON.stringify({
+                        //     "id":this.state.TS_ID,
+                        //     "department_id": this.state.S1_Dept_ID,
+                        //     "job_no": this.state.S1_Job_No,
+                        //     "exchange": this.state.S1_Exchange,
+                        //     "job_date": this.state.S1_Date,
+                        //     "users": this.state.S1_Engineer_ArrayId.toString(),
+                        //     "user_id": this.state.CassUserID,
+                        //     "submitter_name": this.state.SubmitterName,
+                        //     "work_item_id_qty": C2_QtyArraylist,
+                        //     "comments": this.state.S3_TextComments,
+                        //     "item_details": [...this.state.S3_InfoArray,...this.state.S3_InfoArrayTemp],
+                        //     "user_percentage": this.state.Engineer_Edited == true ? this.state.S4_CostPercentage_AE : this.state.S4_CostPercentage_BE,
+                        //     "user_cost": this.state.Engineer_Edited == true ? this.state.S4_UserAmount_AE : this.state.S4_UserAmount_BE,
+                        //     "signature": this.state.SignatureSaved?this.state.Signature_Image:'',
+                        //     "is_final":1,
+                        //     "files":JSON.stringify(docs_data)
+                        // })
                         const servicePath = draftList
                          ? Timesheet_Add:Timesheet_Update;
-                      
+                         const draftId =this.state.TS_ID;
+
+                    //    console.log("##draftId",this.state.TS_ID);
+                    //    return false; 
                        // const draftId = draftList?await this.Draft_Add(reqData):this.state.TS_ID;
-                        const draftId = await this.Draft_Add(reqData);
+                        //const draftId = await this.Draft_Add(reqData);
                      
                         if(draftId){
                             fetch(servicePath, {

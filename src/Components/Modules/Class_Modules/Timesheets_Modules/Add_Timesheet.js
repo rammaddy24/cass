@@ -632,7 +632,7 @@ class Add_Timesheet extends Component {
     }
 
     validate_Draft(){
-
+        const infoArray= this.state.S3_InfoArray.filter(item => item.Is_Status == true);
         let C2_QtyArraylist = 0
         for (let i = 0; i < this.state.S2_Quatitylist_Response.length; i++) {
             
@@ -648,7 +648,8 @@ class Add_Timesheet extends Component {
             });
          } 
      
-       else if (C2_QtyArraylist != this.state.S3_InfoArray.length) {
+       else if (C2_QtyArraylist !==0 && C2_QtyArraylist != infoArray.length) {
+         
             Snackbar.show({
                 title: 'Enter Additional Info..!',
                 duration: Snackbar.LENGTH_SHORT,
@@ -699,6 +700,7 @@ class Add_Timesheet extends Component {
                     })
                 }
             } else if (this.state.Add_TimesheetScreenIndex == 2) {
+                const infoArray= this.state.S3_InfoArray.filter(item => item.Is_Status == true);
                 if (Route_Data == "Prev") {
                     this.setState({
                         Add_TimesheetScreen: "Step 1",
@@ -714,8 +716,6 @@ class Add_Timesheet extends Component {
                            
                         }
                     }
-                    console.log("##C2_QtyArraylist", C2_QtyArraylist);
-
                     if (this.state.S2_Qty_Count == 0) {
                         Snackbar.show({
                             title: 'Select Work Items..!',
@@ -723,13 +723,16 @@ class Add_Timesheet extends Component {
                         });
                      } 
                  
-                   else if (C2_QtyArraylist != this.state.S3_InfoArray.length) {
+                   else if (C2_QtyArraylist !==0 && C2_QtyArraylist != infoArray.length) {
                         Snackbar.show({
                             title: 'Enter Additional Info..!',
                             duration: Snackbar.LENGTH_SHORT,
                         });
                     } 
                     else {
+                        if(C2_QtyArraylist ===0){
+                            this.setState({S3_InfoArray:[]});
+                        }
                         this.setState({
                             Add_TimesheetScreen: "Step 3",
                             Add_TimesheetScreenIndex: 3
@@ -873,9 +876,10 @@ class Add_Timesheet extends Component {
                         this.state.S4_UserAmount[i] = ((this.state.S2_Qty_Amount * this.state.S4_CostPercentage[i]) / 100).toFixed(2)
                     }
                     let docs_data=[];
+                    console.log("##S6_Docsupload",this.state.S6_Docsupload);
                     for (let i = 0; i<this.state.S6_Docsupload.length; i++){
                         const fileUri = this.state.S6_Docsupload[i].Docs_URL;
-                        const fileName = this.state.S6_Docsupload[i].Docs_Name;
+                        const fileName = this.state.S6_Docsupload[i].title;
                         const fileType =  this.state.S6_Docsupload[i].Docs_Type;
                         const downloadPath =  `${RNFS.DownloadDirectoryPath}/${fileName}`;
                        //  console.log("##docUrlDir",downloadPath);
@@ -898,7 +902,6 @@ class Add_Timesheet extends Component {
                                     file:`${fileType},${base64}`,
                                     title:fileName
                                 }
-                                 console.log("##fileData",JSON.stringify(fileData));
                                  //console.log("##excel",base64);
                                  docs_data.push(fileData); 
                              })
@@ -909,8 +912,7 @@ class Add_Timesheet extends Component {
                    
 
                     if (Number(C4_Cost).toFixed(0) == 100) {
-                        
-                        
+  
                        const reqData = JSON.stringify({
                         "department_id": this.state.S1_Dept_ID,
                         "job_no": this.state.S1_Job_No,
@@ -929,28 +931,11 @@ class Add_Timesheet extends Component {
                         "files":JSON.stringify(docs_data)
                     });
               
-                      
+                     
                          
                          const draftId = await this.Draft_Add(reqData);
                         if(draftId){
-                            console.log("##AddData",JSON.stringify({
-                                "id":draftId,
-                                "department_id": this.state.S1_Dept_ID,
-                                "job_no": this.state.S1_Job_No,
-                                "exchange": this.state.S1_Exchange,
-                                "job_date": this.state.S1_Date,
-                                "users": this.state.S1_Engineer_ArrayId.toString(),
-                                "user_id": this.state.CassUserID,
-                                "submitter_name": this.state.SubmitterName,
-                                "work_item_id_qty": C2_QtyArraylist,
-                                "comments": this.state.S3_TextComments,
-                               // "item_details": this.state.S3_InfoArray,
-                                "item_details": [...this.state.S3_InfoArray,...this.state.S3_InfoArrayTemp],
-                                "user_percentage": this.state.S4_CostPercentage,
-                                "user_cost": this.state.S4_UserAmount,
-                                "signature": this.state.SignatureSaved?this.state.Signature_Image:'',
-                                "files":JSON.stringify(docs_data)
-                            }));
+                          
     
                             fetch(Timesheet_Add, {
                                 method: 'POST',
@@ -1290,27 +1275,50 @@ class Add_Timesheet extends Component {
             const res = await DocumentPicker.pickMultiple({
                 type: [DocumentPicker.types.xls,DocumentPicker.types.xlsx,DocumentPicker.types.csv],
             });
-            let Docs = []
-            for (hv = 0; hv < res.length; hv++) {
-                
-                let ext= res[hv].name.match(/\.[0-9a-z]+$/i)[0];
-                
-                const fileExtension = ext.replace('.','');
-                Docs = ({
-                    "Docs_Name": res[hv].name,
-                    "Docs_URL": res[hv].fileCopyUri,
-                    "Docs_ID": [hv],
-                    "Docs_Type":fileExtension
+            
+            const granted = await PermissionsAndroid.requestMultiple(
+                [
+                    PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+                   PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE
+                ]
+              );
+            if (granted['android.permission.READ_EXTERNAL_STORAGE'] === PermissionsAndroid.RESULTS.GRANTED &&
+            granted['android.permission.WRITE_EXTERNAL_STORAGE']
+            ) {
+          
+                let Docs = []
+                for (hv = 0; hv < res.length; hv++) {
+                    
+                    let ext= res[hv].name.match(/\.[0-9a-z]+$/i)[0];
+                    
+                    const fileExtension = ext.replace('.','');
+                    Docs = ({
+                        "title": res[hv].name,
+                        "Docs_URL": res[hv].fileCopyUri,
+                        "Docs_ID": [hv],
+                        "Docs_Type":fileExtension
+                    });
+    
+                }
+                console.log("##docs",Docs);
+    
+              //  console.log("##document",Docs);
+                this.setState({ S6_Docsupload: this.state.S6_Docsupload.concat(Docs) });
+                this.forceUpdate();
+                Snackbar.show({
+                    title: 'Document Uploaded..!',
+                    duration: Snackbar.LENGTH_SHORT,
                 });
-
+        
+            } else {
+                // Snackbar.show({
+                //     title: 'Document Uploaded..!',
+                //     duration: Snackbar.LENGTH_SHORT,
+                // });
+              console.log("Camera permission denied");
             }
-          //  console.log("##document",Docs);
-            this.setState({ S6_Docsupload: this.state.S6_Docsupload.concat(Docs) });
-            this.forceUpdate()
-            Snackbar.show({
-                title: 'Document Uploaded..!',
-                duration: Snackbar.LENGTH_SHORT,
-            });
+        
+         
         } catch (err) {
             console.log("Error",err);
             if (DocumentPicker.isCancel(err)) {
@@ -1461,14 +1469,17 @@ class Add_Timesheet extends Component {
 
     async Draft_Add(reqData) {
       let draftId = '';
-       for (let i = 0; i < this.state.S1_Engineer_DataArray.length; i++) {
-        this.state.S4_CostPercentage.push(
-            (100 / (this.state.S1_Engineer_DataArray.length)).toFixed(2)
-        )
-        this.state.S4_UserAmount.push(
-            ((this.state.S2_Qty_Amount / this.state.S1_Engineer_ALength))
-        )
-    }
+      if(!reqData){
+        for (let i = 0; i < this.state.S1_Engineer_DataArray.length; i++) {
+            this.state.S4_CostPercentage.push(
+                (100 / (this.state.S1_Engineer_DataArray.length)).toFixed(2)
+            )
+            this.state.S4_UserAmount.push(
+                ((this.state.S2_Qty_Amount / this.state.S1_Engineer_ALength))
+            )
+        }
+      }
+     
 
 
        var S2_QtyArraylist_Preview = []
@@ -1499,7 +1510,7 @@ class Add_Timesheet extends Component {
         let docs_data=[];
         for (let i = 0; i<this.state.S6_Docsupload.length; i++){
             const fileUri = this.state.S6_Docsupload[i].Docs_URL;
-            const fileName = this.state.S6_Docsupload[i].Docs_Name;
+            const fileName = this.state.S6_Docsupload[i].title;
             const fileType =  this.state.S6_Docsupload[i].Docs_Type;
             const downloadPath =  `${RNFS.DownloadDirectoryPath}/${fileName}`;
     
@@ -1953,7 +1964,7 @@ class Add_Timesheet extends Component {
 
                                                                         <View style={{ flex: 0.12, justifyContent: 'center', }}>
                                                                             <View style={{ flex: 0.3, justifyContent: 'center', }} />
-                                                                            <TouchableOpacity onPress={() => this.S2_ToggleMethod(item, this.state.S2_Quatitylist_Response)} style={{ flex: 0.4, justifyContent: 'center', alignItems: "center", }}>
+                                                                            <TouchableOpacity onPress={() => this.S2_ToggleMethod(item, index)} style={{ flex: 0.4, justifyContent: 'center', alignItems: "center", }}>
                                                                                 <Image source={require('../../../../Asset/Icons/Toggle.png')} style={{ width: width / 100 * 10, height: width / 100 * 8, tintColor: item.isClicked == true ? LG_BG_THEME.APPTHEME_1 : LG_BG_THEME.APPTHEME_BLACK, transform: item.isClicked == true ? [{ rotate: '0deg' }] : [{ rotate: '180deg' }] }} />
                                                                             </TouchableOpacity>
 
@@ -2468,7 +2479,7 @@ class Add_Timesheet extends Component {
                                                                                             </View>
 
                                                                                             <View style={{ flex: 0.7, justifyContent: "center", alignItems: "flex-start" }}>
-                                                                                                <Text numberOfLines={2} style={styles.S6_BMedium}>{item.Docs_Name}</Text>
+                                                                                                <Text numberOfLines={2} style={styles.S6_BMedium}>{item.title}</Text>
                                                                                             </View>
 
                                                                                             <TouchableOpacity onPress={() => this.DelteImage_Method(item)} style={{ flex: 0.1, justifyContent: "center" }}>
@@ -2823,7 +2834,7 @@ class Add_Timesheet extends Component {
                                                                                                 </View>
 
                                                                                                 <View style={{ flex: 0.7, justifyContent: "center", alignItems: "flex-start" }}>
-                                                                                                    <Text numberOfLines={2} style={styles.S6_BMedium}>{item.Docs_Name}</Text>
+                                                                                                    <Text numberOfLines={2} style={styles.S6_BMedium}>{item.title}</Text>
                                                                                                 </View>
 
                                                                                                 <View style={{ flex: 0.1, justifyContent: "center" }} />
