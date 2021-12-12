@@ -1070,7 +1070,6 @@ class Add_Timesheet extends Component {
 
     TS3_Method(RouteName, Route_Data) {
         
-     
        let C2_QtyArraylist = 0
        for (let i = 0; i < this.state.S2_Quatitylist_Response.length; i++) {
            if (this.state.S2_Quatitylist_Response[i].Is_QtyCount != 0 && this.state.S2_Quatitylist_Response[i].additional_info == "1") {
@@ -1099,7 +1098,6 @@ class Add_Timesheet extends Component {
                 }
                 const S3_Info_activeIndex = this.state.activeIndex;
                 const InfoArrExist = this.state.S3_InfoArray[S3_Info_activeIndex];
-                
                 if(!InfoArrExist || Route_Data!==true){
                     if( Route_Data===true){
                         this.state.S3_InfoArray.push({
@@ -1126,7 +1124,6 @@ class Add_Timesheet extends Component {
                     }
                 }
                 else {
-
                     let S3_InfoArray = [...this.state.S3_InfoArray];
                     // 2. Make a shallow copy of the item you want to mutate
                     let item = {...S3_InfoArray[S3_Info_activeIndex]};
@@ -1159,12 +1156,12 @@ class Add_Timesheet extends Component {
                 else {
                     this.setState({
                           S3_Section_No: "", S3_Distance: "", S3_Blockage: "",
-                         S3_Desilt: "", S3_New_Track: "", S3_DFESlipNumber: "", S3_Comments: "", S3_Infostatus: false,
+                         S3_Desilt: "", S3_New_Track: "", S3_DFESlipNumber: "", S3_Comments: "", 
                          AddionalInfo_Modal: false,
                          S3_Infostatus:false,
                          activeIndex:''
                     })
-                }
+               }
 
                 this.forceUpdate()
 
@@ -2174,7 +2171,7 @@ class Add_Timesheet extends Component {
 
                                                                         :
 
-                                                                        this.state.S3_InfoArray.length == 0 ?
+                                                                        (this.state.S3_InfoArray.length ===0 && this.state.S3_InfoArrayTemp.length === 0) ?
 
                                                                             <View style={{ flex: 1, justifyContent: "center", }}>
                                                                                 <Text style={styles.S3_InfoText}>{"Add your other information's"}</Text>

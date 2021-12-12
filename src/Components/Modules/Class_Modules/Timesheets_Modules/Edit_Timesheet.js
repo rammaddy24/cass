@@ -132,6 +132,10 @@ class Edit_Timesheet extends Component {
             }
         })
         console.log("##editInfo_Response",JSON.stringify(TSEdit_Response));
+       
+        const addInfoArray= JSON.parse((TSEdit_Response.item_details)).filter(item => item.Is_Status === true);
+        const nonInfoArray=  JSON.parse((TSEdit_Response.item_details)).filter(item => item.Is_Status !== true);
+
         this.setState({
             CassUserID: TSEdit_Response.user_id,
             TS_ID: TSEdit_Response.id,
@@ -146,12 +150,15 @@ class Edit_Timesheet extends Component {
             S3_TextComments: TSEdit_Response.comments,
             S1_Engineer_ArrayId: (TSEdit_Response.users.split(",")),
             S2_QtyArraylist_Response: JSON.parse(TSEdit_Response.work_item_id_qty.replace(/'/g, '"')),
-            S3_InfoArray:TSEdit_Response.item_details? JSON.parse(TSEdit_Response.item_details.replace(/'/g, '"')):[],
+           // S3_InfoArray:TSEdit_Response.item_details? JSON.parse(TSEdit_Response.item_details.replace(/'/g, '"')):[],
+           
+            S3_InfoArray: addInfoArray,
             S4_CostPercentage_BE: JSON.parse(TSEdit_Response.user_percentage.replace(/'/g, '"')),
             // S2_QtyArraylist_Response: JSON.parse(TSEdit_Response.work_item_id_qty.replace(/'/g, '"')),
           //  S3_InfoArray: [],
            // S2_QtyArraylist_Response:TSEdit_Response.work_item_id_qty ?JSON.parse(TSEdit_Response.work_item_id_qty.replace(/'/g, '"')):[],
-            S4_UserAmount_BE: JSON.parse(TSEdit_Response.user_cost.replace(/'/g, '"')),
+           S3_InfoArrayTemp: nonInfoArray,
+           S4_UserAmount_BE: JSON.parse(TSEdit_Response.user_cost.replace(/'/g, '"')),
             Signature_Image:UserInfo_Response.signature,
             S6_Docsupload:TSEdit_Response.file_details
         })
@@ -1383,15 +1390,20 @@ class Edit_Timesheet extends Component {
     }
 
     S2_InfoMethod(Route_Data, S2_Quatitylist_Response) {
+        console.log("##S2_Quatitylist_Response",S2_Quatitylist_Response);
         var addInfoData= S2_Quatitylist_Response.filter((data)=>{
             return data.additional_info=='1';
         });
  
- 
-        const activeIndex= addInfoData.findIndex((item)=>{
+        console.log("##addInfoData",addInfoData);
+        console.log("##addInfoArray",this.state.S3_InfoArray);
+        // const activeIndex= addInfoData.findIndex((item)=>{
+        //     return item["id"]===Route_Data.id;
+        // });
+        const activeIndex= S2_Quatitylist_Response.findIndex((item)=>{
             return item["id"]===Route_Data.id;
         });
-
+        console.log("##activeIndex",activeIndex);
         this.setState({
             AddionalInfo_Modal: true,
             activeIndex
@@ -1401,7 +1413,7 @@ class Edit_Timesheet extends Component {
     }
 
     TS3_Method(RouteName, Route_Data) {
-        
+        // const infoArray= this.state.S3_InfoArray.filter(item => item.Is_Status == true);
         let C2_QtyArraylist = 0
         for (let i = 0; i < this.state.S2_Quatitylist_Response.length; i++) {
             if (this.state.S2_Quatitylist_Response[i].Is_QtyCount != 0 && this.state.S2_Quatitylist_Response[i].additional_info == "1") {
@@ -1431,9 +1443,8 @@ class Edit_Timesheet extends Component {
                     }
                 }
                 const S3_Info_activeIndex = this.state.activeIndex;
-                const InfoArrExist = this.state.S3_InfoArray[S3_Info_activeIndex];
-                console.log("##infoArrayExist",InfoArrExist);
-                console.log("##RouteData",Route_Data);
+                const InfoArrExist = this.state.S3_InfoArray[S3_Info_activeIndex]; ///// to check
+
                 if(!InfoArrExist || Route_Data!==true){
                     if( Route_Data===true){
                         this.state.S3_InfoArray.push({
@@ -1505,20 +1516,25 @@ class Edit_Timesheet extends Component {
     }
 
     S3_ToggleMethod(RouteName, Route_Data) {
+      
+  
+       // const infoArray = [...this.state.S3_InfoArray,...this.state.S3_InfoArrayTemp ];
+       // let tempArray=infoArray.filter(item => item.Is_Status !== true);
+      
         if (RouteName.Is_Status == true) {
             Snackbar.show({
                 title: 'Cant Delete this info.!',
                 duration: Snackbar.LENGTH_SHORT,
             });
         } else {
-            var Id = []
+            var Id = [];
             for (hv = 0; hv < this.state.S3_InfoArrayTemp.length; hv++) {
                 Id.push(this.state.S3_InfoArrayTemp[hv].section_no)
             }
-
-            var S3_InfoArrayList = this.state.S3_InfoArrayTemp.splice(Id.indexOf(RouteName.section_no), 1);
-
-            this.setState({ S3_InfoArrayTemp: S3_InfoArrayList })
+           
+            const S3_InfoArrayList = this.state.S3_InfoArrayTemp.splice(Id.indexOf(RouteName.section_no), 1);
+            console.log("##S3_InfoArrayList",S3_InfoArrayList);
+            this.setState({ S3_InfoArrayTemp: this.state.S3_InfoArrayTemp })
             this.setState({ S3_InfoArrayTemp: Array.from(new Set(this.state.S3_InfoArrayTemp)) })
         }
         this.forceUpdate()
@@ -1724,6 +1740,7 @@ class Edit_Timesheet extends Component {
 
     render() {
         const draftList = get(this.props.navigation.state,'params.draftList','');
+        const addInfoArray= this.state.S3_InfoArray.filter(item => item.Is_Status == true);
         return (
             <LinearGradient key="background" start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} colors={[LG_BG_THEME.APPTHEME_BG_2, LG_BG_THEME.APPTHEME_BG_2]} style={{ flex: 1, justifyContent: "center" }} >
 
@@ -2070,7 +2087,6 @@ class Edit_Timesheet extends Component {
                                                                             <TouchableOpacity onPress={() => this.S2_ToggleMethod(item, this.state.S2_Quatitylist_Response)} style={{ flex: 0.4, justifyContent: 'center', alignItems: "center", }}>
                                                                                 <Image source={require('../../../../Asset/Icons/Toggle.png')} style={{ width: width / 100 * 10, height: width / 100 * 8, tintColor: item.isClicked == true ? LG_BG_THEME.APPTHEME_1 : LG_BG_THEME.APPTHEME_BLACK, transform: item.isClicked == true ? [{ rotate: '0deg' }] : [{ rotate: '180deg' }] }} />
                                                                             </TouchableOpacity>
-
                                                                             <View style={{ flex: 0.3, justifyContent: 'center', }} />
                                                                         </View>
                                                                     </View>
@@ -2078,7 +2094,7 @@ class Edit_Timesheet extends Component {
                                                                     {item.additional_info == "1" ?
                                                                          <View style={{ flex: 1, justifyContent: 'center',zIndex:1000000, position: "absolute", flexDirection: "row", top: - (width / 100 * 1) }}>
                                                                             <View style={{ flex: 0.8, justifyContent: 'center', }} />
-                                                                            <TouchableOpacity onPress={() => this.S2_InfoMethod(item, this.state.S2_Quatitylist_Response)} style={{ flex: 0.2, justifyContent: "flex-start", alignItems: "flex-start", }}>
+                                                                            <TouchableOpacity onPress={() => this.S2_InfoMethod(item,this.state.S2_Quatitylist_Response)} style={{ flex: 0.2, justifyContent: "flex-start", alignItems: "flex-start", }}>
                                                                                 <Image source={require('../../../../Asset/Icons/Ball_Info.png')} style={{ width: width / 100 * 5, height: width / 100 * 5, tintColor: LG_BG_THEME.LIGHTGREY_THEME, transform: [{ rotate: '0deg' }] }} />
                                                                             </TouchableOpacity>
 
@@ -2275,7 +2291,7 @@ class Edit_Timesheet extends Component {
 
                                                                         :
 
-                                                                        this.state.S3_InfoArray.length == 0 ?
+                                                                        (this.state.S3_InfoArray.length ===0 && this.state.S3_InfoArrayTemp.length === 0)?
 
                                                                             <View style={{ flex: 1, justifyContent: "center", }}>
                                                                                 <Text style={styles.S3_InfoText}>{"Add your other information's"}</Text>
@@ -2872,6 +2888,27 @@ class Edit_Timesheet extends Component {
                                                                                                         </View>
                                                                                                     ))}
 
+
+                                                                                                    {this.state.S3_InfoArrayTemp.map((item, index) => (
+
+                                                                                                    <View style={{ height: height / 100 * 7, justifyContent: "center", flexDirection: 'row', marginBottom: width / 100 * 3, elevation: Platform.OS == "android" ? width / 100 * 1 : width / 100 * 0.1, shadowOffset: { width: 2, height: 2 }, shadowOpacity: 0.2, shadowColor: LG_BG_THEME.APPTHEME_2 }}>
+                                                                                                        <TouchableOpacity onPress={() => this.Container_Model("Info Items", true, item)} style={{ flex: 0.35, justifyContent: 'center', backgroundColor: LG_BG_THEME.WHITE_THEME, opacity: 0.8 }}>
+                                                                                                            <Text style={styles.S2_container_BlackText}>{item.section_no}</Text>
+
+                                                                                                            <Image source={require('../../../../Asset/Icons/search.png')} style={{ width: width / 100 * 4, height: width / 100 * 4, tintColor: LG_BG_THEME.APPTHEME_1, position: "absolute", marginLeft: width / 100 * 1 }} />
+
+                                                                                                        </TouchableOpacity>
+                                                                                                        <View style={{ flex: 0.25, justifyContent: 'center', backgroundColor: LG_BG_THEME.APPTHEME_GREY_2, }}>
+                                                                                                            <Text style={styles.S2_container_BlackText}>{item.distance}</Text>
+                                                                                                        </View>
+                                                                                                        <View style={{ flex: 0.4, justifyContent: 'center', backgroundColor: LG_BG_THEME.WHITE_THEME, opacity: 0.8 }}>
+                                                                                                            <Text style={styles.S2_container_BlackText}>{item.blockage}</Text>
+                                                                                                        </View>
+
+
+                                                                                                    </View>
+                                                                                                    ))}
+
                                                                                                     <View style={styles.Container_EP_2} />
 
                                                                                                     <View style={styles.container_TextInputOverview_2}>
@@ -3434,7 +3471,7 @@ class Edit_Timesheet extends Component {
                                                     value={
                                                         this.state.S3_Distance? this.state.S3_Distance:
                                                         (this.state.S3_InfoArray.length>0&&
-                                                        this.state.S3_InfoArray[this.state.activeIndex]?this.state.S3_InfoArray[this.state.activeIndex].distance:'')}
+                                                            this.state.S3_InfoArray[this.state.activeIndex]?this.state.S3_InfoArray[this.state.activeIndex].distance:'')}
                                                 />
                                             </View>
                                         </View>
